@@ -29,11 +29,11 @@ CareConnect bridges the gap between patients and healthcare providers by providi
 ### Landing Page, Sign-In and Sign-Up
 
 ````carousel
-![CareConnect Landing Page](screenshots/landing_page.png)
+![CareConnect Landing Page](screenshots/c_landing_page.png)
 <!-- slide -->
-![Sign Up Page](screenshots/signup_page.png)
+![Sign Up Page](screenshots/c_signup_page.png)
 <!-- slide -->
-![Sign In Page](screenshots/signin_page.png)
+![Sign In Page](screenshots/c_signin_page.png)
 ````
 
 ### User Dashboard
