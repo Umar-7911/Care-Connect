@@ -29,49 +29,49 @@ CareConnect bridges the gap between patients and healthcare providers by providi
 ### Landing Page, Sign-In and Sign-Up
 
 ````carousel
-![CareConnect Landing Page](static/images/screenshots/landing_page.png)
+![CareConnect Landing Page](screenshots/landing_page.png)
 <!-- slide -->
-![Sign Up Page](static/images/screenshots/signup_page.png)
+![Sign Up Page](screenshots/signup_page.png)
 <!-- slide -->
-![Sign In Page](static/images/screenshots/signin_page.png)
+![Sign In Page](screenshots/signin_page.png)
 ````
 
 ### User Dashboard
 
 ````carousel
-![Hospital Search](static/images/screenshots/user_hospital_search.png)
+![Hospital Search](screenshots/user_hospital_search.png)
 <!-- slide -->
-![Hospital Results](static/images/screenshots/user_hospital_results.png)
+![Hospital Results](screenshots/user_hospital_results.png)
 <!-- slide -->
-![Hospital Comparison](static/images/screenshots/user_hospital_comparison.png)
+![Hospital Comparison](screenshots/user_hospital_comparison.png)
 <!-- slide -->
-![Ambulance Directory](static/images/screenshots/user_ambulance_directory.png)
+![Ambulance Directory](screenshots/user_ambulance_directory.png)
 ````
 
 ### Hospital Dashboard
 
 ````carousel
-![Update Bed Availability](static/images/screenshots/hospital_update_beds.png)
+![Update Bed Availability](screenshots/hospital_update_beds.png)
 <!-- slide -->
-![Update Facilities](static/images/screenshots/hospital_update_facilities.png)
+![Update Facilities](screenshots/hospital_update_facilities.png)
 <!-- slide -->
-![Update Insurance](static/images/screenshots/hospital_update_insurance.png)
+![Update Insurance](screenshots/hospital_update_insurance.png)
 <!-- slide -->
-![Update Pricing](static/images/screenshots/hospital_update_pricing.png)
+![Update Pricing](screenshots/hospital_update_pricing.png)
 ````
 
 ### Ambulance Dashboard
 
 ````carousel
-![Dashboard Overview](static/images/screenshots/ambulance_dashboard_overview.png)
+![Dashboard Overview](screenshots/ambulance_dashboard_overview.png)
 <!-- slide -->
-![Manage Ambulances](static/images/screenshots/ambulance_manage_fleet.png)
+![Manage Ambulances](screenshots/ambulance_manage_fleet.png)
 <!-- slide -->
-![Fleet List](static/images/screenshots/ambulance_fleet_list.png)
+![Fleet List](screenshots/ambulance_fleet_list.png)
 <!-- slide -->
-![Service Area](static/images/screenshots/ambulance_service_area.png)
+![Service Area](screenshots/ambulance_service_area.png)
 <!-- slide -->
-![Update Pricing](static/images/screenshots/ambulance_update_pricing.png)
+![Update Pricing](screenshots/ambulance_update_pricing.png)
 ````
 
 ## 🛠️ Technology Stack
