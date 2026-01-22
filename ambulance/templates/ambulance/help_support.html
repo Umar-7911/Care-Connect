@@ -1,0 +1,141 @@
+{% extends 'ambulance/base_ambulance.html' %}
+
+{% block title %}Help & Support - CareConnect{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Help & Support</h2>
+    <p class="subtitle">Get help with using the CareConnect platform</p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+    <!-- Quick Start Guide -->
+    <div class="ambulance-card">
+        <div
+            style="width: 64px; height: 64px; background: #EFF6FF; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="#2563EB">
+                <path d="M16 8v16M8 16h16" stroke="#2563EB" stroke-width="2" stroke-linecap="round" />
+            </svg>
+        </div>
+        <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;">Quick Start Guide</h3>
+        <p style="font-size: 0.875rem; color: #6B7280; margin-bottom: 1rem;">Learn how to use the dashboard effectively
+        </p>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+            <li
+                style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative; font-size: 0.875rem; color: #374151;">
+                <span style="position: absolute; left: 0; color: #2563EB; font-weight: bold;">•</span>
+                Add your ambulances to the system
+            </li>
+            <li
+                style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative; font-size: 0.875rem; color: #374151;">
+                <span style="position: absolute; left: 0; color: #2563EB; font-weight: bold;">•</span>
+                Set transparent pricing
+            </li>
+            <li
+                style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative; font-size: 0.875rem; color: #374151;">
+                <span style="position: absolute; left: 0; color: #2563EB; font-weight: bold;">•</span>
+                Define your service areas
+            </li>
+            <li
+                style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative; font-size: 0.875rem; color: #374151;">
+                <span style="position: absolute; left: 0; color: #2563EB; font-weight: bold;">•</span>
+                Keep availability updated
+            </li>
+        </ul>
+    </div>
+
+    <!-- Best Practices -->
+    <div class="ambulance-card">
+        <div
+            style="width: 64px; height: 64px; background: #ECFDF5; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="#10B981">
+                <circle cx="16" cy="16" r="12" stroke="#10B981" stroke-width="2" fill="none" />
+                <path d="M16 12v8M16 8h.01" stroke="#10B981" stroke-width="2" stroke-linecap="round" />
+            </svg>
+        </div>
+        <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;">Best Practices</h3>
+        <p style="font-size: 0.875rem; color: #6B7280; margin-bottom: 1rem;">Tips for maintaining accurate data</p>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+            <li
+                style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative; font-size: 0.875rem; color: #374151;">
+                <span style="position: absolute; left: 0; color: #10B981; font-weight: bold;">•</span>
+                Update availability in real-time
+            </li>
+            <li
+                style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative; font-size: 0.875rem; color: #374151;">
+                <span style="position: absolute; left: 0; color: #10B981; font-weight: bold;">•</span>
+                Verify pricing regularly
+            </li>
+            <li
+                style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative; font-size: 0.875rem; color: #374151;">
+                <span style="position: absolute; left: 0; color: #10B981; font-weight: bold;">•</span>
+                Keep contact information current
+            </li>
+            <li
+                style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative; font-size: 0.875rem; color: #374151;">
+                <span style="position: absolute; left: 0; color: #10B981; font-weight: bold;">•</span>
+                Respond to inquiries promptly
+            </li>
+        </ul>
+    </div>
+
+    <!-- Contact Support -->
+    <div class="ambulance-card">
+        <div
+            style="width: 64px; height: 64px; background: #FEF3C7; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="#F59E0B">
+                <path d="M4 8l8 5.333L20 8M4 8v12c0 1.105.895 2 2 2h14c1.105 0 2-.895 2-2V8M4 8l8-4 8 4"
+                    stroke="#F59E0B" stroke-width="2" fill="none" />
+            </svg>
+        </div>
+        <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;">Contact Support</h3>
+        <p style="font-size: 0.875rem; color: #6B7280; margin-bottom: 1rem;">Need help? Reach out to our team</p>
+        <div style="background: #F9FAFB; padding: 1rem; border-radius: 0.5rem;">
+            <p style="margin: 0.5rem 0; font-size: 0.875rem; color: #374151;">
+                <strong>Email:</strong> support@careconnect.com
+            </p>
+            <p style="margin: 0.5rem 0; font-size: 0.875rem; color: #374151;">
+                <strong>Phone:</strong> +91 1800-123-4567
+            </p>
+            <p style="margin: 0.5rem 0; font-size: 0.875rem; color: #374151;">
+                <strong>Hours:</strong> 24/7 Support
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Section -->
+<div class="ambulance-card" style="margin-top: 2rem;">
+    <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem;">Frequently Asked Questions</h3>
+
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div>
+            <h4 style="font-size: 1rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">How do I add a new
+                ambulance?</h4>
+            <p style="font-size: 0.875rem; color: #6B7280;">Go to "Manage Ambulances" and use the form at the top to add
+                ambulance details including number, type, and facilities.</p>
+        </div>
+
+        <div>
+            <h4 style="font-size: 1rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">Can I update pricing
+                anytime?</h4>
+            <p style="font-size: 0.875rem; color: #6B7280;">Yes, you can update pricing anytime from the "Update
+                Pricing" page. Changes are reflected immediately to users.</p>
+        </div>
+
+        <div>
+            <h4 style="font-size: 1rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">How do I mark an
+                ambulance as unavailable?</h4>
+            <p style="font-size: 0.875rem; color: #6B7280;">In "Manage Ambulances", use the toggle switch next to each
+                ambulance to change its availability status.</p>
+        </div>
+
+        <div>
+            <h4 style="font-size: 1rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">What are service
+                areas?</h4>
+            <p style="font-size: 0.875rem; color: #6B7280;">Service areas define the cities and zones where your
+                ambulances operate. This helps users find nearby services.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

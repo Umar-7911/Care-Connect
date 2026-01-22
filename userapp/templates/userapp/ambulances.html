@@ -1,0 +1,872 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Ambulances - CareConnect</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 16px 0;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #1976d2;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1976d2;
+        }
+
+        .logo-tagline {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            white-space: nowrap;
+        }
+
+        .nav-links a {
+            color: #555;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-links a.active {
+            color: #1976d2;
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            color: #1976d2;
+            font-weight: 600;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 24px;
+        }
+
+        /* Service Type Selection Cards */
+        .service-type-section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .service-type-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .service-type-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+        }
+
+        .service-type-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .service-type-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .service-type-card:hover {
+            border-color: #1976d2;
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.15);
+        }
+
+        .service-type-card.active {
+            border-color: #1976d2;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f5f5f5 100%);
+            box-shadow: 0 4px 16px rgba(25, 118, 210, 0.2);
+        }
+
+        .service-type-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 28px;
+        }
+
+        .service-type-card:nth-child(1) .service-type-icon {
+            background: #e3f2fd;
+        }
+
+        .service-type-card:nth-child(2) .service-type-icon {
+            background: #ffebee;
+        }
+
+        .service-type-card:nth-child(3) .service-type-icon {
+            background: #e8f5e9;
+        }
+
+        .service-type-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .service-type-desc {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .service-type-tags {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .service-type-tag {
+            padding: 4px 12px;
+            background: #f5f5f5;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #666;
+        }
+
+        /* Ambulance Grid */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .results-count {
+            font-size: 16px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .ambulance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .ambulance-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .ambulance-card.visible {
+            display: block;
+        }
+
+        .ambulance-card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .ambulance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .ambulance-id {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .ambulance-type-badge {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .ambulance-type-badge.ALS {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .ambulance-type-badge.BLS {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .ambulance-type-badge.Non-Emergency {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .provider-name {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .ambulance-location {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+
+        .facilities-section {
+            margin-bottom: 16px;
+        }
+
+        .facilities-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .facilities-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .facility-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .facility-item.available {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .service-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .service-detail-item {
+            font-size: 12px;
+        }
+
+        .service-detail-label {
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .service-detail-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .pricing-section {
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .pricing-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .pricing-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 13px;
+        }
+
+        .pricing-item {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .pricing-label {
+            color: #666;
+        }
+
+        .pricing-value {
+            font-weight: 700;
+            color: #1976d2;
+        }
+
+        .availability-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .availability-status.available {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .availability-status.busy {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .book-button {
+            width: 100%;
+            padding: 12px;
+            background: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .book-button:hover {
+            background: #1565c0;
+        }
+
+        .book-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .no-results-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .no-results-title {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .no-results-text {
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .service-type-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .ambulance-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-container">
+                <div class="logo-icon">+</div>
+                <div class="logo-text">
+                    <div class="logo-title">CareConnect</div>
+                    <div class="logo-tagline">Right Care. Right Time.</div>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="{% url 'userapp:home' %}" {% if request.resolver_match.url_name == 'home' %}class="active" {% endif %}>Home</a>
+
+
+                <a href="{% url 'userapp:results' %}" {% if request.resolver_match.url_name == 'search' or request.resolver_match.url_name == 'results' %}class="active" {% endif %}>Results</a>
+
+
+                <a href="{% url 'userapp:compare' %}" {% if request.resolver_match.url_name == 'compare' %}class="active" {% endif %}>Compare Hospitals</a>
+
+
+                <a href="{% url 'userapp:ambulances' %}" {% if request.resolver_match.url_name == 'ambulances' or request.resolver_match.url_name == 'book_ambulance' %}class="active" {% endif %}>Ambulances</a>
+
+
+                <div class="user-info">
+                    <span>👤</span>
+                    <span id="username">{{ username }}</span>
+                </div>
+                <a href="{% url 'core:logout' %}" style="color:#d32f2f;">Sign Out</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        {% if selected_hospital %}
+        <div
+            style="background: #e3f2fd; border-left: 4px solid #1976d2; padding: 16px 20px; border-radius: 8px; margin-bottom: 24px;">
+            <h3 style="margin: 0 0 8px 0; color: #1976d2;">🏥 Selected Hospital: {{ selected_hospital.name }}</h3>
+            <p style="margin: 0; color: #666; font-size: 14px;">📍 {{ selected_hospital.address }}, {{ selected_hospital.city }}</p>
+            <p style="margin: 4px 0 0 0; color: #666; font-size: 14px;">📞 {{ selected_hospital.phone }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Service Type Selection -->
+        <section class="service-type-section">
+            <h2 class="service-type-title">Choose Service Type</h2>
+            <p class="service-type-subtitle">Select the type of ambulance service you need</p>
+            <div class="service-type-cards">
+                <div class="service-type-card active" data-type="all" onclick="filterByType('all')">
+                    <div class="service-type-icon">📅</div>
+                    <div class="service-type-name">All Ambulances</div>
+                    <div class="service-type-desc">View all available ambulances in your vicinity</div>
+                    <div class="service-type-tags">
+                        <span class="service-type-tag">BLS</span>
+                        <span class="service-type-tag">ALS</span>
+                        <span class="service-type-tag">Patient Transport</span>
+                    </div>
+                </div>
+                <div class="service-type-card" data-type="ALS" onclick="filterByType('ALS')">
+                    <div class="service-type-icon">💰</div>
+                    <div class="service-type-name">Advanced Life Support</div>
+                    <div class="service-type-desc">For critical patients requiring intensive monitoring</div>
+                    <div class="service-type-tags">
+                        <span class="service-type-tag">Ventilator</span>
+                        <span class="service-type-tag">ICU Equipment</span>
+                        <span class="service-type-tag">Paramedic</span>
+                    </div>
+                </div>
+                <div class="service-type-card" data-type="BLS" onclick="filterByType('BLS')">
+                    <div class="service-type-icon">📊</div>
+                    <div class="service-type-name">Basic Life Support</div>
+                    <div class="service-type-desc">For patients requiring basic medical supervision</div>
+                    <div class="service-type-tags">
+                        <span class="service-type-tag">Oxygen</span>
+                        <span class="service-type-tag">Stretcher</span>
+                        <span class="service-type-tag">First Aid</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Header -->
+        <div class="results-header">
+            <div class="results-count" id="resultsCount">0 ambulances available</div>
+        </div>
+
+        <!-- Ambulance Grid -->
+        <div class="ambulance-grid" id="ambulanceGrid">
+            {% if providers %}
+            {% for provider in providers %}
+            {% for ambulance in provider.ambulances.all %}
+            {% if ambulance.is_available and ambulance.id not in active_booking_ambulance_ids %}
+            <div class="ambulance-card" data-type="{{ ambulance.type }}" data-ambulance-id="{{ ambulance.id }}"
+                data-provider-id="{{ provider.id }}">
+                <div class="ambulance-header">
+                    <div>
+                        <div class="ambulance-id">{{ ambulance.vehicle_number }}</div>
+                        <div class="provider-name">{{ provider.name }}</div>
+                    </div>
+                    <span class="ambulance-type-badge {{ ambulance.type }}">{{ ambulance.type }}</span>
+                </div>
+
+                <div class="ambulance-location">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color: #d32f2f;">
+                        <path
+                            d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                    </svg>
+                    <span>{{ provider.city }}</span>
+                </div>
+
+                {% if ambulance.facilities %}
+                <div class="facilities-section">
+                    <div class="facilities-title">Facilities Available</div>
+                    <div class="facilities-list" id="facilities-{{ ambulance.id }}">
+                        <!-- Facilities will be populated by JavaScript -->
+                    </div>
+                </div>
+                <script>
+                    (function () {
+                        const facilities = "{{ ambulance.facilities }}".split(',').map(f => f.trim()).filter(f => f);
+                        const container = document.getElementById('facilities-{{ ambulance.id }}');
+                        if (container && facilities.length > 0) {
+                            facilities.forEach(function (facility) {
+                                const item = document.createElement('div');
+                                item.className = 'facility-item available';
+                                item.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/></svg> ' + facility;
+                                container.appendChild(item);
+                            });
+                        }
+                    })();
+                </script>
+                {% endif %}
+
+                <div class="service-details">
+                    <div class="service-detail-item">
+                        <div class="service-detail-label">SERVICE AREA</div>
+                        <div class="service-detail-value">Within {{ provider.city }} km radius</div>
+                    </div>
+                    <div class="service-detail-item">
+                        <div class="service-detail-label">ESTIMATED ARRIVAL</div>
+                        <div class="service-detail-value">
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"
+                                style="display: inline; vertical-align: middle;">
+                                <path
+                                    d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z" />
+                                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z" />
+                            </svg>
+                            15-25 minutes
+                        </div>
+                    </div>
+                </div>
+
+                {% if provider.pricing_info %}
+                <div class="pricing-section">
+                    <div class="pricing-title">Pricing</div>
+                    <div class="pricing-details">
+                        <div class="pricing-item">
+                            <span class="pricing-label">Base Fare:</span>
+                            <span class="pricing-value">₹{{ provider.pricing_info.base_fare|default:0 }}</span>
+                        </div>
+                        <div class="pricing-item">
+                            <span class="pricing-label">Per Km Charge:</span>
+                            <span class="pricing-value">₹{{ provider.pricing_info.per_km|default:0 }}/km</span>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="availability-status available">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                        <circle cx="8" cy="8" r="6" fill="currentColor" />
+                    </svg>
+                    Available
+                </div>
+
+                {% if selected_hospital %}
+                <button class="book-button"
+                    onclick="showBookingForm({{ provider.id }}, '{{ provider.name|escapejs }}', {{ ambulance.id }}, '{{ ambulance.vehicle_number|escapejs }}')">
+                    <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+                        <path
+                            d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122L9.78 11.5a.678.678 0 0 1-.58-.122L6.5 8.8a.678.678 0 0 1-.122-.58l.5-2.307a.678.678 0 0 0-.122-.58L4.654 1.328z" />
+                    </svg>
+                    Book Ambulance
+                </button>
+                {% else %}
+                <button class="book-button" disabled>
+                    Select Hospital First
+                </button>
+                {% endif %}
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+            {% endif %}
+        </div>
+
+        <!-- No Results Message -->
+        <div class="no-results" id="noResults" style="display: none;">
+            <div class="no-results-icon">🚑</div>
+            <h3 class="no-results-title">No Ambulances Found</h3>
+            <p class="no-results-text">Try selecting a different service type or check back later.</p>
+        </div>
+
+        <!-- Booking Form Modal -->
+        {% if selected_hospital %}
+        <div id="bookingModal"
+            style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+            <div
+                style="background: white; border-radius: 12px; padding: 32px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;">
+                <h2 style="margin: 0 0 24px 0; color: #1a1a1a;">Book Ambulance Service</h2>
+                <form id="bookingForm" method="POST" action="{% url 'userapp:book_ambulance' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="hospital_id" value="{{ selected_hospital.id }}">
+                    <input type="hidden" name="provider_id" id="bookingProviderId">
+                    <input type="hidden" name="ambulance_id" id="bookingAmbulanceId">
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">Selected Hospital</label>
+                        <input type="text" value="{{ selected_hospital.name }}" readonly
+                            style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; background: #f5f5f5;">
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">Ambulance Provider</label>
+                        <input type="text" id="bookingProviderName" readonly
+                            style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; background: #f5f5f5;">
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">Ambulance Vehicle</label>
+                        <input type="text" id="bookingAmbulanceNumber" readonly
+                            style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; background: #f5f5f5;">
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">Patient Name *</label>
+                        <input type="text" name="patient_name" required placeholder="Enter patient name"
+                            style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">Patient Phone *</label>
+                        <input type="tel" name="patient_phone" required placeholder="Enter phone number"
+                            style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">Pickup Location *</label>
+                        <input type="text" name="pickup_location" required placeholder="Enter full pickup address"
+                            style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                    </div>
+
+                    <!-- Hidden Drop Location (Defaults to Hospital) -->
+                    <input type="hidden" name="drop_location"
+                        value="{{ selected_hospital.name }}, {{ selected_hospital.address }}, {{ selected_hospital.city }}">
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Pickup Date *</label>
+                            <input type="date" name="pickup_date" id="pickupDate" required
+                                style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Pickup Time *</label>
+                            <input type="time" name="pickup_time" id="pickupTime" required
+                                style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                        </div>
+                    </div>
+
+                    <script>
+                        // Auto-fill date and time to now
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const now = new Date();
+                            const dateInput = document.getElementById('pickupDate');
+                            const timeInput = document.getElementById('pickupTime');
+
+                            if (dateInput && !dateInput.value) {
+                                dateInput.valueAsDate = now;
+                            }
+                            if (timeInput && !timeInput.value) {
+                                // Format time as HH:MM
+                                const hours = String(now.getHours()).padStart(2, '0');
+                                const minutes = String(now.getMinutes()).padStart(2, '0');
+                                timeInput.value = `${hours}:${minutes}`;
+                            }
+                        });
+                    </script>
+
+                    <div style="display: flex; gap: 12px; margin-top: 24px;">
+                        <button type="button" onclick="closeBookingForm()"
+                            style="flex: 1; padding: 12px; border: 2px solid #e0e0e0; background: white; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            style="flex: 1; padding: 12px; border: none; background: #1976d2; color: white; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            Confirm Booking
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer"
+        style="background: #f5f7fa; border-top: 1px solid #e0e0e0; padding: 40px 24px; margin-top: 60px;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div
+                style="background: #e3f2fd; border-left: 4px solid #1976d2; padding: 16px 20px; border-radius: 8px; margin-bottom: 24px; display: flex; align-items: start; gap: 12px;">
+                <span style="color: #1976d2; font-size: 20px; flex-shrink: 0;">ℹ️</span>
+                <div style="font-size: 14px; color: #1565c0; line-height: 1.6;">
+                    <strong style="color: #0d47a1;">Important Notice:</strong> Hospital availability is updated directly
+                    by hospital administrators. Please call the hospital to confirm bed availability before arrival.
+                </div>
+            </div>
+            <div style="text-align: center; color: #666; font-size: 14px; line-height: 1.8;">
+                <p><strong style="color: #333;">CareConnect</strong> helps you find the right healthcare facility
+                    quickly and efficiently.</p>
+                <p style="margin-top: 8px;">For medical emergencies, please call emergency services immediately.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let currentFilter = 'all';
+
+        function filterByType(type) {
+            currentFilter = type;
+
+            // Update active card
+            document.querySelectorAll('.service-type-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.querySelector(`[data-type="${type}"]`).classList.add('active');
+
+            // Filter ambulance cards
+            const cards = document.querySelectorAll('.ambulance-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const cardType = card.getAttribute('data-type');
+                if (type === 'all' || cardType === type) {
+                    card.classList.add('visible');
+                    visibleCount++;
+                } else {
+                    card.classList.remove('visible');
+                }
+            });
+
+            // Update results count
+            const resultsCount = document.getElementById('resultsCount');
+            resultsCount.textContent = `${visibleCount} ambulance${visibleCount !== 1 ? 's' : ''} available`;
+
+            // Show/hide no results message
+            const noResults = document.getElementById('noResults');
+            if (visibleCount === 0) {
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            filterByType('all');
+        });
+
+        function showBookingForm(providerId, providerName, ambulanceId, ambulanceNumber) {
+            document.getElementById('bookingProviderId').value = providerId;
+            document.getElementById('bookingProviderName').value = providerName;
+            document.getElementById('bookingAmbulanceId').value = ambulanceId;
+            document.getElementById('bookingAmbulanceNumber').value = ambulanceNumber;
+            document.getElementById('bookingModal').style.display = 'flex';
+
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.querySelector('input[name="pickup_date"]');
+            if (dateInput) {
+                dateInput.min = today;
+            }
+        }
+
+        function closeBookingForm() {
+            document.getElementById('bookingModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function (event) {
+            const modal = document.getElementById('bookingModal');
+            if (modal && event.target === modal) {
+                closeBookingForm();
+            }
+        });
+    </script>
+</body>
+
+</html>

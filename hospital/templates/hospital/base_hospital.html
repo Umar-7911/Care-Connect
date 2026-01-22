@@ -1,0 +1,129 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hospital Admin Dashboard - CareConnect{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/hospital.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect width="32" height="32" rx="8" fill="#2563EB" />
+                    <path d="M16 8V24M8 16H24" stroke="white" stroke-width="3" stroke-linecap="round" />
+                </svg>
+                <div>
+                    <h1>CareConnect</h1>
+                    <p>Hospital Admin Dashboard</p>
+                </div>
+            </div>
+        </div>
+        <div class="header-right">
+            <span class="hospital-name">{{ request.session.hospital_name|default:"Hospital Admin" }}</span>
+            <a href="{% url 'core:logout' %}" class="logout-btn">Logout</a>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a href="{% url 'hospital:dashboard' %}"
+                    class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <rect x="3" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" />
+                        <rect x="11" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" />
+                        <rect x="3" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" />
+                        <rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" />
+                    </svg>
+                    <span>Dashboard Overview</span>
+                </a>
+                <a href="{% url 'hospital:update_beds' %}"
+                    class="nav-item {% if request.resolver_match.url_name == 'update_beds' %}active{% endif %}">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <rect x="2" y="8" width="16" height="8" rx="1" stroke="currentColor" stroke-width="1.5" />
+                        <path d="M2 12H18" stroke="currentColor" stroke-width="1.5" />
+                    </svg>
+                    <span>Update Bed Availability</span>
+                </a>
+                <a href="{% url 'hospital:update_facilities' %}"
+                    class="nav-item {% if request.resolver_match.url_name == 'update_facilities' %}active{% endif %}">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.5" />
+                        <path d="M3 8H17M10 8V17" stroke="currentColor" stroke-width="1.5" />
+                    </svg>
+                    <span>Update Facilities</span>
+                </a>
+                <a href="{% url 'hospital:update_pricing' %}"
+                    class="nav-item {% if request.resolver_match.url_name == 'update_pricing' %}active{% endif %}">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5" />
+                        <path
+                            d="M10 6V14M8 8H11C11.5523 8 12 8.44772 12 9C12 9.55228 11.5523 10 11 10H9C8.44772 10 8 10.4477 8 11C8 11.5523 8.44772 12 9 12H11"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                    </svg>
+                    <span>Update Pricing</span>
+                </a>
+                <a href="{% url 'hospital:update_insurances' %}"
+                    class="nav-item {% if request.resolver_match.url_name == 'update_insurances' %}active{% endif %}">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 2L3 5V9C3 13.5 6.5 17.5 10 18C13.5 17.5 17 13.5 17 9V5L10 2Z" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M7 9.5L9.5 12L13 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    <span>Update Insurances</span>
+                </a>
+                <a href="{% url 'hospital:activity_logs' %}"
+                    class="nav-item {% if request.resolver_match.url_name == 'activity_logs' %}active{% endif %}">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path
+                            d="M6 3H14C15.1046 3 16 3.89543 16 5V17C16 17.5523 15.5523 18 15 18H5C4.44772 18 4 17.5523 4 17V5C4 3.89543 4.89543 3 6 3Z"
+                            stroke="currentColor" stroke-width="1.5" />
+                        <path d="M7 7H13M7 11H13M7 15H10" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" />
+                    </svg>
+                    <span>View Activity Logs</span>
+                </a>
+                <a href="{% url 'hospital:help_support' %}"
+                    class="nav-item {% if request.resolver_match.url_name == 'help_support' %}active{% endif %}">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5" />
+                        <path
+                            d="M10 14V14.5M10 6.5C8.61929 6.5 7.5 7.61929 7.5 9C7.5 9.27614 7.72386 9.5 8 9.5H8.5C8.77614 9.5 9 9.27614 9 9C9 8.44772 9.44772 8 10 8C10.5523 8 11 8.44772 11 9C11 9.55228 10.5523 10 10 10V11.5"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                    </svg>
+                    <span>Help / Support</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Messages -->
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

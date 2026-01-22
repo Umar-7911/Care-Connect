@@ -1,0 +1,44 @@
+{% extends 'hospital/base_hospital.html' %}
+
+{% block title %}Activity Logs - CareConnect{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h2>Activity Logs</h2>
+    <p class="subtitle">View recent updates and changes</p>
+</div>
+
+<div class="activity-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Date & Time</th>
+                <th>Action</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if logs %}
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.timestamp|date:"M d, Y g:i A" }}</td>
+                <td>
+                    <span
+                        class="action-badge {% if 'bed' in log.action %}bed{% elif 'pricing' in log.action %}pricing{% elif 'facilit' in log.action %}facility{% endif %}">
+                        {{ log.action|cut:"_"|title}}
+                    </span>
+                </td>
+                <td>{{ log.details }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="3" style="text-align: center; padding: 40px; color: #6B7280;">
+                    No activity logs yet. Start by updating bed availability or facilities.
+                </td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

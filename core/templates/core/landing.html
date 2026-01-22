@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareConnect - Right Care. Right Time.</title>
+    <link rel="stylesheet" href="{% static 'css/modern_landing.css' %}">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="white">
+                        <path d="M16 8v16M8 16h16" stroke="white" stroke-width="3" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>CareConnect</h1>
+                    <p>Right Care. Right Time.</p>
+                </div>
+            </div>
+            <nav class="nav-menu">
+                <a href="{% url 'core:login' %}">Home</a>
+                <a href="{% url 'core:login' %}">Results</a>
+                <a href="{% url 'core:login' %}">Compare Hospitals</a>
+                <a href="{% url 'core:login' %}">Ambulances</a>
+            </nav>
+            <div class="auth-buttons">
+                {% if request.session.user_id %}
+                <a href="{% url 'core:logout' %}" class="btn-secondary">Sign Out</a>
+                {% else %}
+                <a href="{% url 'core:login' %}" class="btn-secondary">Sign In</a>
+                <a href="{% url 'core:signup' %}" class="btn-primary">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-icon">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="white">
+                    <circle cx="40" cy="40" r="35" stroke="white" stroke-width="2" fill="none" />
+                    <path d="M40 20v40M20 40h40" stroke="white" stroke-width="4" stroke-linecap="round" />
+                </svg>
+            </div>
+            <h1 class="hero-title">CARECONNECT</h1>
+            <p class="hero-subtitle">Right Care. Right Time.</p>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="features-container">
+            <div class="feature-card">
+                <div class="feature-icon blue">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="currentColor">
+                        <path
+                            d="M38 18c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 4.418 2.389 8.287 5.948 10.393C15.089 30.617 12 35.775 12 41.5V42h24v-.5c0-5.725-3.089-10.883-7.948-13.107C31.611 26.287 34 22.418 34 18z" />
+                    </svg>
+                </div>
+                <h3>Hospital Search</h3>
+                <p>Search nearby hospitals and check availability</p>
+                <a href="{% url 'core:login' %}" class="feature-link">
+                    <span>→</span>
+                </a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon blue">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="currentColor">
+                        <path d="M24 6L8 14v10c0 10 6.5 19.5 16 22 9.5-2.5 16-12 16-22V14L24 6z" />
+                    </svg>
+                </div>
+                <h3>Hospital Results</h3>
+                <p>View hospitals with live bed and facility availability</p>
+                <a href="{% url 'core:login' %}" class="feature-link">
+                    <span>→</span>
+                </a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon blue">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="currentColor">
+                        <path d="M12 18h24v-4H12v4zm0 8h24v-4H12v4zm0 8h16v-4H12v4z" />
+                    </svg>
+                </div>
+                <h3>Compare Hospitals</h3>
+                <p>Compare hospitals based on facilities and indicative costs</p>
+                <a href="{% url 'core:login' %}" class="feature-link">
+                    <span>→</span>
+                </a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon blue">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="currentColor">
+                        <path d="M16 32a2 2 0 11-4 0 2 2 0 014 0zM28 32a2 2 0 11-4 0 2 2 0 014 0z" />
+                        <path d="M8 12a2 2 0 012-2h16a2 2 0 012 2v18h-4a3 3 0 00-6 0h-4a2 2 0 01-2-2V12z" />
+                    </svg>
+                </div>
+                <h3>Ambulances</h3>
+                <p>Compare private ambulance services for hospital transport</p>
+                <a href="{% url 'core:login' %}" class="feature-link">
+                    <span>→</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Section -->
+    <section class="info-section">
+        <div class="info-container">
+            <div class="info-icon">
+                <svg width="64" height="64" viewBox="0 0 64 64" fill="#2563EB">
+                    <circle cx="32" cy="32" r="28" stroke="#2563EB" stroke-width="2" fill="none" />
+                    <path d="M32 16v32M16 32h32" stroke="#2563EB" stroke-width="3" stroke-linecap="round" />
+                </svg>
+            </div>
+            <h2>Quick Access During Medical Emergencies</h2>
+            <p>CareConnect helps you find reliable healthcare services quickly and transparently. Search for hospitals,
+                check real-time availability, compare facilities, and arrange ambulance transport—all in one place.</p>
+            <p class="disclaimer">For life-threatening emergencies, please call emergency services (108/102)
+                immediately.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>About CareConnect</h4>
+                <p>CareConnect is a healthcare emergency coordination platform designed to help patients and families
+                    make informed decisions during medical emergencies.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="{% url 'core:login' %}">Hospital Search</a>
+                <a href="{% url 'core:login' %}">Compare Hospitals</a>
+                <a href="{% url 'core:login' %}">Ambulance Services</a>
+            </div>
+            <div class="footer-section">
+                <h4>Emergency Contacts</h4>
+                <p>Ambulance: 108 / 102</p>
+                <p>Police: 100</p>
+                <p>Fire: 101</p>
+                <p>Women Helpline: 1091</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 CareConnect. All rights reserved. This platform does not provide medical diagnosis or treatment
+                advice.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

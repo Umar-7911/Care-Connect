@@ -1,0 +1,72 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Sign In - CareConnect{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="logo-section">
+        <div class="logo">
+            <div class="logo-icon">+</div>
+            CareConnect
+        </div>
+        <p class="subtitle">Healthcare Emergency Coordination</p>
+    </div>
+
+    <h1 class="page-title">Welcome Back</h1>
+    <p class="page-description">Sign in to access your account</p>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <form method="post" id="signinForm">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="email">Email Address <span class="required">*</span></label>
+            <div class="input-wrapper">
+                <span class="input-icon">✉️</span>
+                <input type="email" id="email" name="email" value="{{ email }}" placeholder="your.email@example.com"
+                    required autofocus>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password <span class="required">*</span></label>
+            <div class="input-wrapper">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <span class="password-toggle" onclick="togglePassword('password', this)">👁️</span>
+            </div>
+        </div>
+
+        <button type="submit" class="primary-btn">Sign In</button>
+    </form>
+
+    <div class="secondary-link">
+        Don't have an account? <a href="{% url 'core:signup' %}">Create Account</a>
+    </div>
+    
+    <div class="secondary-link" style="margin-top: 8px;">
+        <a href="{% url 'core:forgot_password' %}" style="color: #1976d2; text-decoration: none; font-weight: 500; transition: color 0.3s ease;" onmouseover="this.style.color='#1565c0'" onmouseout="this.style.color='#1976d2'">Forgot Password?</a>
+    </div>
+</div>
+
+<script>
+    function togglePassword(inputId, icon) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            icon.textContent = '👁️';
+        }
+    }
+</script>
+{% endblock %}

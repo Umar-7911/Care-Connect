@@ -1,0 +1,382 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Hospitals - CareConnect</title>
+    <link rel="stylesheet" href="{% static 'css/modern_compare.css' %}">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-container">
+                <div class="logo-icon">+</div>
+                <div class="logo-text">
+                    <div class="logo-title">CareConnect</div>
+                    <div class="logo-tagline">Right Care. Right Time.</div>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="{% url 'userapp:home' %}" {% if request.resolver_match.url_name == 'home' %}class="active" {% endif %}>Home</a>
+
+                <a href="{% url 'userapp:results' %}" {% if request.resolver_match.url_name == 'search' or request.resolver_match.url_name == 'results' %}class="active" {% endif %}>Results</a>
+
+                <a href="{% url 'userapp:compare' %}" {% if request.resolver_match.url_name == 'compare' %}class="active" {% endif %}>Compare Hospitals</a>
+
+                <a href="{% url 'userapp:ambulances' %}" {% if request.resolver_match.url_name == 'ambulances' or request.resolver_match.url_name == 'book_ambulance' %}class="active" {% endif %}>Ambulances</a>
+
+                <div class="user-info">
+                    <span>👤</span>
+                    <span id="username">{{ username|default:request.user.email|default:request.user.username }}</span>
+                </div>
+                <a href="{% url 'core:logout' %}" style="color:#d32f2f;">Sign Out</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Compare Hospitals</h1>
+        <p class="page-subtitle">Compare facilities, availability, and indicative costs before choosing a hospital</p>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% if hospitals %}
+        <a href="{% url 'userapp:search' %}" class="back-button">← Back to Results</a>
+
+        <!-- Comparison Table -->
+        <div class="comparison-container">
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Hospital Details</th>
+                        {% for hospital in hospitals %}
+                        <th class="hospital-header-cell">
+                            <div class="hospital-name-main">{{ hospital.name }}</div>
+                            <div class="hospital-badges">
+                                {% if hospital.type == 'government' %}
+                                <span class="badge government">Government</span>
+                                {% else %}
+                                <span class="badge private">Private</span>
+                                {% endif %}
+                                <span class="badge verified">✓ Verified</span>
+                                {% if forloop.first %}
+                                <span class="badge highlight">Closest Hospital</span>
+                                {% endif %}
+                            </div>
+                            <div class="hospital-distance">📍📍 {{ hospital.distance }} km away</div>
+                        </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Bed Availability Section -->
+                    <tr class="section-header-row">
+                        <td colspan="{{ hospitals|length|add:1 }}">🛏️ Live Bed Availability</td>
+                    </tr>
+                    <tr>
+                        <td>ICU Beds</td>
+                        {% for hospital in hospitals %}
+                        <td>
+                            {% if hospital.beds.icu_percentage >= 50 %}
+                            <div class="availability-status available">
+                                <span>🟢</span>
+                                <span>{{ hospital.beds.icu }}/{{ hospital.beds.icu_total }} - Available</span>
+                            </div>
+                            {% elif hospital.beds.icu > 0 %}
+                            <div class="availability-status limited">
+                                <span>🟠</span>
+                                <span>{{ hospital.beds.icu }}/{{ hospital.beds.icu_total }} - Limited</span>
+                            </div>
+                            {% else %}
+                            <div class="availability-status unavailable">
+                                <span>🔴</span>
+                                <span>{{ hospital.beds.icu }}/{{ hospital.beds.icu_total }} - Full</span>
+                            </div>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>Oxygen Beds</td>
+                        {% for hospital in hospitals %}
+                        <td>
+                            {% if hospital.beds.oxygen_percentage >= 50 %}
+                            <div class="availability-status available">
+                                <span>🟢</span>
+                                <span>{{ hospital.beds.oxygen }}/{{ hospital.beds.oxygen_total }} - Available</span>
+                            </div>
+                            {% elif hospital.beds.oxygen > 0 %}
+                            <div class="availability-status limited">
+                                <span>🟠</span>
+                                <span>{{ hospital.beds.oxygen }}/{{ hospital.beds.oxygen_total }} - Limited</span>
+                            </div>
+                            {% else %}
+                            <div class="availability-status unavailable">
+                                <span>🔴</span>
+                                <span>{{ hospital.beds.oxygen }}/{{ hospital.beds.oxygen_total }} - Full</span>
+                            </div>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>Ventilators</td>
+                        {% for hospital in hospitals %}
+                        <td>
+                            {% if hospital.beds.ventilator_percentage >= 50 %}
+                            <div class="availability-status available">
+                                <span>🟢</span>
+                                <span>{{ hospital.beds.ventilator }}/{{ hospital.beds.ventilator_total }} -
+                                    Available</span>
+                            </div>
+                            {% elif hospital.beds.ventilator > 0 %}
+                            <div class="availability-status limited">
+                                <span>🟠</span>
+                                <span>{{ hospital.beds.ventilator }}/{{ hospital.beds.ventilator_total }} -
+                                    Limited</span>
+                            </div>
+                            {% else %}
+                            <div class="availability-status unavailable">
+                                <span>🔴</span>
+                                <span>{{ hospital.beds.ventilator }}/{{ hospital.beds.ventilator_total }} - Full</span>
+                            </div>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>Isolation Wards</td>
+                        {% for hospital in hospitals %}
+                        <td>
+                            {% if hospital.beds.isolation_percentage >= 50 %}
+                            <div class="availability-status available">
+                                <span>🟢</span>
+                                <span>{{ hospital.beds.isolation }}/{{ hospital.beds.isolation_total }} -
+                                    Available</span>
+                            </div>
+                            {% elif hospital.beds.isolation > 0 %}
+                            <div class="availability-status limited">
+                                <span>🟠</span>
+                                <span>{{ hospital.beds.isolation }}/{{ hospital.beds.isolation_total }} - Limited</span>
+                            </div>
+                            {% else %}
+                            <div class="availability-status unavailable">
+                                <span>🔴</span>
+                                <span>{{ hospital.beds.isolation }}/{{ hospital.beds.isolation_total }} - Full</span>
+                            </div>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Insurance Section -->
+                    <tr class="section-header-row">
+                        <td colspan="{{ hospitals|length|add:1 }}"> Insurance Schemes Supported</td>
+                    </tr>
+                    <tr>
+                        <td>Ayushman Bharat (PM-JAY)</td>
+                        {% for hospital in hospitals %}
+                        <td>
+                            <div
+                                class="facility-check {% if hospital.type == 'government' %}yes{% else %}no{% endif %}">
+                                <span>{% if hospital.type == 'government' %}✓{% else %}✗{% endif %}
+                                </span>
+                                <span>{% if hospital.type == 'government' %}Available{% else %}Not Available{% endif %}
+                                </span>
+                            </div>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>CGHS</td>
+                        {% for hospital in hospitals %}
+                        <td>
+                            <div class="facility-check yes">
+                                <span>✓</span>
+                                <span>Available</span>
+                            </div>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>ESI</td>
+                        {% for hospital in hospitals %}
+                        <td>
+                            <div
+                                class="facility-check {% if hospital.type == 'government' %}yes{% else %}no{% endif %}">
+                                <span>{% if hospital.type == 'government' %}✓{% else %}✗{% endif %}
+                                </span>
+                                <span>{% if hospital.type == 'government' %}Available{% else %}Not Available{% endif %}
+                                </span>
+                            </div>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>Private Insurance</td>
+                        {% for hospital in hospitals %}
+                        <td>
+                            <div class="facility-check yes">
+                                <span>✓</span>
+                                <span>Available</span>
+                            </div>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>Cashless Available</td>
+                        {% for hospital in hospitals %}
+                        <td>
+                            <div class="facility-check yes">
+                                <span>✓</span>
+                                <span>Available</span>
+                            </div>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>Accepted Insurance Providers</td>
+                        {% for hospital in hospitals %}
+                        <td>
+                            <div class="insurance-list">
+                                {% if hospital.insurance_providers.accepted %}
+                                {% for provider in hospital.insurance_providers.accepted %}
+                                <div class="insurance-item">✓ {{ provider }}</div>
+                                {% endfor %}
+                                {% else %}
+                                <div class="facility-check no">
+                                    <span>-</span>
+                                    <span>Not specified</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Pricing Section -->
+                    <tr class="section-header-row">
+                        <td colspan="{{ hospitals|length|add:1 }}"> Indicative Pricing (Per Day)</td>
+                    </tr>
+                    <tr>
+                        <td>General Bed</td>
+                        {% for hospital in hospitals %}
+                        <td>
+                            <div class="price-range">
+                                <div class="price-amount">{{ hospital.pricing.general_bed|default:"₹500 - ₹1,000" }}
+                                </div>
+                                <div class="price-label">per day</div>
+                            </div>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>ICU Bed</td>
+                        {% for hospital in hospitals %}
+                        <td>
+                            <div class="price-range">
+                                <div class="price-amount">{{ hospital.pricing.icu_bed|default:"₹2,000 - ₹3,500" }}</div>
+                                <div class="price-label">per day</div>
+                            </div>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>Ventilator</td>
+                        {% for hospital in hospitals %}
+                        <td>
+                            <div class="price-range">
+                                <div class="price-amount">{{ hospital.pricing.ventilator|default:"₹3,000 - ₹5,000" }}
+                                </div>
+                                <div class="price-label">per day</div>
+                            </div>
+                        </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Last Updated Section -->
+                    <tr class="section-header-row">
+                        <td colspan="{{ hospitals|length|add:1 }}"> Data Freshness</td>
+                    </tr>
+                    <tr>
+                        <td>Last Updated</td>
+                        {% for hospital in hospitals %}
+                        <td>
+                            <div class="update-info">
+                                Updated <span class="update-time">{{ hospital.updated_at }}</span>
+                            </div>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <!-- Hospital Selection Row -->
+                    <tr>
+                        <td></td>
+                        {% for hospital in hospitals %}
+                        <td>
+                            <div class="hospital-selection-cell">
+                                <input type="radio" name="selectedHospital" value="{{ hospital.id }}"
+                                    class="hospital-radio" {% if forloop.first %}checked{% endif %}>
+                            </div>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="disclaimer">
+            <strong>Important:</strong> Prices are indicative and provided by hospitals. Availability is updated by
+            hospital administrators. Please contact the hospital before arrival.
+        </div>
+        {% else %}
+        <div class="no-results">
+            <h3>No hospitals selected for comparison</h3>
+            <p>Please go back and select at least one hospital.</p>
+            <a href="{% url 'userapp:search' %}" class="btn-primary">← Back to Results</a>
+        </div>
+        {% endif %}
+    </main>
+
+    <!-- Action Section -->
+    <div class="action-section">
+        <div class="action-content">
+            <div class="action-info">
+                Select a hospital to proceed with ambulance booking
+            </div>
+            <div class="action-buttons">
+                <a href="{% url 'userapp:search' %}" class="btn-secondary">← Back to Results</a>
+                <button class="btn-primary" id="selectHospitalBtn">Select Hospital & Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/compare.js' %}"></script>
+    <!-- Footer -->
+    <footer class="footer"
+        style="background: #f5f7fa; border-top: 1px solid #e0e0e0; padding: 40px 24px; margin-top: 60px;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div
+                style="background: #e3f2fd; border-left: 4px solid #1976d2; padding: 16px 20px; border-radius: 8px; margin-bottom: 24px; display: flex; align-items: start; gap: 12px;">
+                <span style="color: #1976d2; font-size: 20px; flex-shrink: 0;"></span>
+                <div style="font-size: 14px; color: #1565c0; line-height: 1.6;">
+                    <strong style="color: #0d47a1;">Important Notice:</strong> Hospital availability is updated directly
+                    by hospital administrators. Please call the hospital to confirm bed availability before arrival.
+                </div>
+            </div>
+            <div style="text-align: center; color: #666; font-size: 14px; line-height: 1.8;">
+                <p><strong style="color: #333;">CareConnect</strong> helps you find the right healthcare facility
+                    quickly and efficiently.</p>
+                <p style="margin-top: 8px;">For medical emergencies, please call emergency services immediately.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

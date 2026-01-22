@@ -1,0 +1,1108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Hospital Availability - CareConnect</title>
+    <link rel="stylesheet" href="{% static 'css/userapp.css' %}">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <style>
+        /* Results Page Specific Styles */
+        .results-header-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .results-title-main {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .results-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 24px;
+        }
+
+        .status-indicators {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-badge.live {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-badge.time {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .results-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+        }
+
+        .summary-text {
+            color: #666;
+            font-size: 15px;
+        }
+
+        .show-map-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #1976d2;
+            color: #1976d2;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .show-map-btn:hover {
+            background: #1976d2;
+            color: white;
+        }
+
+        .hospital-card-detailed {
+            background: white;
+            border-radius: 16px;
+            padding: 0;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .hospital-card-detailed:hover {
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .hospital-card-content {
+            display: grid;
+            grid-template-columns: 280px 1fr 380px;
+            gap: 0;
+            padding: 0;
+        }
+
+        .hospital-image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 240px;
+            overflow: hidden;
+        }
+
+        .hospital-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .hospital-type-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .hospital-type-badge.government {
+            background: rgba(76, 175, 80, 0.95);
+            color: white;
+        }
+
+        .hospital-type-badge.private {
+            background: rgba(156, 39, 176, 0.95);
+            color: white;
+        }
+
+        .hospital-info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 24px;
+        }
+
+        .hospital-name-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .hospital-name-header h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .verified-check {
+            flex-shrink: 0;
+        }
+
+        .hospital-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            color: #666;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .hospital-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            line-height: 1.5;
+        }
+
+        .hospital-detail-item svg {
+            flex-shrink: 0;
+        }
+
+        .hospital-updated {
+            font-size: 13px;
+            color: #999;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .hospital-updated svg {
+            flex-shrink: 0;
+        }
+
+        .hospital-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: auto;
+            padding-top: 16px;
+        }
+
+        .action-btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .action-btn.select {
+            background: #1976d2;
+            color: white;
+        }
+
+        .action-btn.select:hover {
+            background: #1565c0;
+        }
+
+        .action-btn.select.selected {
+            background: #1976d2;
+            opacity: 0.9;
+        }
+
+        .action-btn.map {
+            background: white;
+            color: #1976d2;
+            border: 2px solid #1976d2;
+        }
+
+        .action-btn.map:hover {
+            background: #e3f2fd;
+            border-color: #1565c0;
+        }
+
+        .availability-section {
+            background: #f8f9fa;
+            border-radius: 0;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .availability-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background: #4caf50;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        .availability-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .availability-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .availability-item {
+            padding: 14px 16px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .availability-item.good {
+            background: #e8f5e9;
+        }
+
+        .availability-item.limited {
+            background: #fff9c4;
+        }
+
+        .availability-item.very_limited {
+            background: #ffebee;
+        }
+
+        .availability-item.full {
+            background: #ffebee;
+        }
+
+        .availability-item-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .availability-item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .availability-icon {
+            flex-shrink: 0;
+            color: #555;
+        }
+
+        .availability-item-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .availability-status {
+            font-size: 14px;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .availability-status.good {
+            color: #2e7d32;
+        }
+
+        .availability-status.limited {
+            color: #f57c00;
+        }
+
+        .availability-status.very_limited {
+            color: #c62828;
+        }
+
+        .availability-status.full {
+            color: #c62828;
+        }
+
+        /* Footer */
+        .footer {
+            background: #f5f7fa;
+            border-top: 1px solid #e0e0e0;
+            padding: 40px 24px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .notice-banner {
+            background: #e3f2fd;
+            border-left: 4px solid #1976d2;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: start;
+            gap: 12px;
+        }
+
+        .notice-icon {
+            color: #1976d2;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .notice-text {
+            font-size: 14px;
+            color: #1565c0;
+            line-height: 1.6;
+        }
+
+        .notice-text strong {
+            color: #0d47a1;
+        }
+
+        .footer-info {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .footer-info strong {
+            color: #333;
+        }
+
+        /* Map Styles */
+        .map-view-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+            overflow: hidden;
+            display: none;
+            height: 600px;
+        }
+
+        .map-view-container.show {
+            display: block;
+        }
+
+        .list-view-container {
+            display: block;
+        }
+
+        .list-view-container.hidden {
+            display: none;
+        }
+
+        #hospitalMap {
+            width: 100%;
+            height: 600px;
+            z-index: 1;
+        }
+
+        .view-toggle-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .view-toggle-btn {
+            padding: 10px 20px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .view-toggle-btn.active {
+            background: #1976d2;
+            color: white;
+            border-color: #1976d2;
+        }
+
+        .view-toggle-btn:hover {
+            border-color: #1976d2;
+        }
+
+        /* Custom Marker Popup Styles */
+        .leaflet-popup-content-wrapper {
+            border-radius: 8px;
+            padding: 0;
+        }
+
+        .leaflet-popup-content {
+            margin: 0;
+            padding: 16px;
+            min-width: 250px;
+        }
+
+        .map-popup-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .map-popup-info {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .map-popup-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .map-popup-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .map-popup-btn.navigate {
+            background: #1976d2;
+            color: white;
+        }
+
+        .map-popup-btn.navigate:hover {
+            background: #1565c0;
+        }
+
+        .map-popup-btn.details {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .map-popup-btn.details:hover {
+            background: #e0e0e0;
+        }
+
+        @media (max-width: 968px) {
+            .hospital-card-content {
+                grid-template-columns: 1fr;
+            }
+
+            .hospital-image-wrapper {
+                min-height: 200px;
+            }
+
+            .availability-items {
+                grid-template-columns: 1fr;
+            }
+
+            .availability-section {
+                border-radius: 0;
+            }
+
+            .hospital-actions {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            #hospitalMap {
+                height: 400px;
+            }
+
+            .map-view-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-container">
+                <div class="logo-icon">+</div>
+                <div class="logo-text">
+                    <div class="logo-title">CareConnect</div>
+                    <div class="logo-tagline">Right Care. Right Time.</div>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="{% url 'userapp:home' %}" {% if request.resolver_match.url_name == 'home' %}class="active" {% endif %}>Home</a>
+
+                <a href="{% url 'userapp:results' %}" {% if request.resolver_match.url_name == 'search' or request.resolver_match.url_name == 'results' %}class="active" {% endif %}>Results</a>
+
+                <a href="{% url 'userapp:compare' %}" {% if request.resolver_match.url_name == 'compare' %}class="active" {% endif %}>Compare Hospitals</a>
+
+                <a href="{% url 'userapp:ambulances' %}" {% if request.resolver_match.url_name == 'ambulances' or request.resolver_match.url_name == 'book_ambulance' %}class="active" {% endif %}>Ambulances</a>
+
+                <div class="user-info">
+                    <span>👤</span>
+                    <span id="username">{{ username|default:request.user.email|default:request.user.username }}</span>
+                </div>
+                <a href="{% url 'core:logout' %}" style="color:#d32f2f;">Sign Out</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Results Header Section -->
+        <section class="results-header-section">
+            <h1 class="results-title-main">Live Hospital Availability Near You</h1>
+            <p class="results-subtitle">Availability updated by hospitals in real time</p>
+            
+            <div class="status-indicators">
+                <div class="status-badge live">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM7 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM10 9.5c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5.448-1.5 1-1.5 1 .672 1 1.5z"/>
+                    </svg>
+                    Live Updates Enabled
+                </div>
+                <div class="status-badge time">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm8-7A8 8 0 1 0 0 8a8 8 0 0 0 16 0z"/>
+                        <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z"/>
+                    </svg>
+                    Last updated: just now
+                </div>
+            </div>
+
+            <div class="results-summary">
+                <div class="summary-text">
+                    Showing <strong>{{ total_results }}</strong> hospital{{ total_results|pluralize }} within <strong>{{ search_radius }}</strong> km
+                    {% if search_location %} of <strong>{{ search_location }}</strong>{% endif %}
+                </div>
+                <div class="view-toggle-buttons">
+                    <button class="view-toggle-btn active" id="listViewBtn" onclick="toggleView('list')">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
+                            <rect x="2" y="2" width="6" height="6" rx="1"/>
+                            <rect x="10" y="2" width="6" height="6" rx="1"/>
+                            <rect x="2" y="10" width="6" height="6" rx="1"/>
+                            <rect x="10" y="10" width="6" height="6" rx="1"/>
+                        </svg>
+                        List View
+                    </button>
+                    <button class="view-toggle-btn" id="mapViewBtn" onclick="toggleView('map')">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
+                            <path d="M9 0C4.03 0 0 4.03 0 9c0 5.97 9 9 9 9s9-3.03 9-9c0-4.97-4.03-9-9-9zm0 12c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/>
+                        </svg>
+                        Map View
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Map View -->
+        <div class="map-view-container" id="mapViewContainer">
+            <div id="hospitalMap"></div>
+        </div>
+
+        <!-- Hospital Cards (List View) -->
+        {% if hospitals %}
+        <div class="list-view-container hospital-grid" id="listViewContainer" style="grid-template-columns: 1fr;">
+            {% for hospital in hospitals %}
+            <div class="hospital-card-detailed" id="hospital-{{ hospital.id_str }}" data-hospital-id="{{ hospital.id_str }}">
+                <div class="hospital-card-content">
+                    <!-- Left Section: Hospital Image -->
+                    <div class="hospital-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=300&h=200&fit=crop" alt="{{ hospital.name }}" class="hospital-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'200\'%3E%3Crect fill=\'%23e3f2fd\' width=\'300\' height=\'200\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' font-size=\'48\' text-anchor=\'middle\' fill=\'%23999\'%3E🏥%3C/text%3E%3C/svg%3E'">
+                        <span class="hospital-type-badge {{ hospital.type }}">
+                            {{ hospital.type|upper }}
+                        </span>
+                    </div>
+                    
+                    <!-- Middle Section: Hospital Info -->
+                    <div class="hospital-info-section">
+                        <div class="hospital-name-header">
+                            <h3>{{ hospital.name }}</h3>
+                            <svg class="verified-check" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="10" cy="10" r="10" fill="#1976d2"/>
+                                <path d="M6 10L9 13L14 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="hospital-details">
+                            <div class="hospital-detail-item">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color: #d32f2f;">
+                                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                                </svg>
+                                <span>{{ hospital.distance }} km away</span>
+                            </div>
+                            <div class="hospital-detail-item">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color: #d32f2f;">
+                                    <path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122L9.78 11.5a.678.678 0 0 1-.58-.122L6.5 8.8a.678.678 0 0 1-.122-.58l.5-2.307a.678.678 0 0 0-.122-.58L4.654 1.328z"/>
+                                </svg>
+                                <span>{{ hospital.phone }}</span>
+                            </div>
+                            <div class="hospital-detail-item">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color: #d32f2f;">
+                                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                                </svg>
+                                <span>{{ hospital.address }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="hospital-updated">
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="color: #999;">
+                                <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                            </svg>
+                            <span>Updated by hospital admin {{ hospital.last_updated }}</span>
+                        </div>
+                        
+                        <div class="hospital-actions">
+                            <button class="action-btn select select-btn" id="select-btn-{{ hospital.id_str }}" onclick="toggleSelectHospital('{{ hospital.id_str }}', '{{ hospital.name|escapejs }}')">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                                </svg>
+                                <span id="select-text-{{ hospital.id_str }}">Select</span>
+                            </button>
+                            <button class="action-btn map" onclick="viewOnMap('{{ hospital.id_str }}')">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                                </svg>
+                                View on Map
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Section: Availability -->
+                    <div class="availability-section">
+                        <div class="availability-header">
+                            <span class="live-dot"></span>
+                            <span class="availability-title">Live Availability</span>
+                        </div>
+                        
+                        <div class="availability-items">
+                            <div class="availability-item {{ hospital.facilities_detail.icu.status }}" data-bed-type="icu">
+                                <div class="availability-item-content">
+                                    <div class="availability-item-left">
+                                        <svg class="availability-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                            <path d="M2 4h16v12H2V4zm2 2v8h12V6H4zm2 2h8v1H6V8zm0 2h8v1H6v-1zm0 2h5v1H6v-1z"/>
+                                        </svg>
+                                        <span class="availability-item-label">ICU Beds</span>
+                                    </div>
+                                    <div class="availability-status {{ hospital.facilities_detail.icu.status }}" data-availability-status>
+                                        {% if hospital.facilities_detail.icu.status == 'good' %}Good
+                                        {% elif hospital.facilities_detail.icu.status == 'limited' %}Limited
+                                        {% elif hospital.facilities_detail.icu.status == 'very_limited' %}Very Limited
+                                        {% else %}Full{% endif %}
+                                        <span data-availability-count>{{ hospital.facilities_detail.icu.available }}/{{ hospital.facilities_detail.icu.total }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="availability-item {{ hospital.facilities_detail.oxygen.status }}" data-bed-type="oxygen">
+                                <div class="availability-item-content">
+                                    <div class="availability-item-left">
+                                        <svg class="availability-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                            <path d="M10 2C5.58 2 2 5.58 2 10s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm-1-9h2v6h-2V7z"/>
+                                        </svg>
+                                        <span class="availability-item-label">Oxygen Beds</span>
+                                    </div>
+                                    <div class="availability-status {{ hospital.facilities_detail.oxygen.status }}" data-availability-status>
+                                        {% if hospital.facilities_detail.oxygen.status == 'good' %}Good
+                                        {% elif hospital.facilities_detail.oxygen.status == 'limited' %}Limited
+                                        {% elif hospital.facilities_detail.oxygen.status == 'very_limited' %}Very Limited
+                                        {% else %}Full{% endif %}
+                                        <span data-availability-count>{{ hospital.facilities_detail.oxygen.available }}/{{ hospital.facilities_detail.oxygen.total }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="availability-item {{ hospital.facilities_detail.ventilator.status }}" data-bed-type="ventilator">
+                                <div class="availability-item-content">
+                                    <div class="availability-item-left">
+                                        <svg class="availability-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                            <path d="M10 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 4h2v6H9V8zm4 0h2v6h-2V8z"/>
+                                        </svg>
+                                        <span class="availability-item-label">Ventilators</span>
+                                    </div>
+                                    <div class="availability-status {{ hospital.facilities_detail.ventilator.status }}" data-availability-status>
+                                        {% if hospital.facilities_detail.ventilator.status == 'good' %}Good
+                                        {% elif hospital.facilities_detail.ventilator.status == 'limited' %}Limited
+                                        {% elif hospital.facilities_detail.ventilator.status == 'very_limited' %}Very Limited
+                                        {% else %}Full{% endif %}
+                                        <span data-availability-count>{{ hospital.facilities_detail.ventilator.available }}/{{ hospital.facilities_detail.ventilator.total }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="availability-item {{ hospital.facilities_detail.isolation.status }}" data-bed-type="isolation">
+                                <div class="availability-item-content">
+                                    <div class="availability-item-left">
+                                        <svg class="availability-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                            <path d="M2 4h16v12H2V4zm2 2v8h12V6H4zm2 2h8v1H6V8zm0 2h8v1H6v-1zm0 2h5v1H6v-1z"/>
+                                        </svg>
+                                        <span class="availability-item-label">General/Isolation</span>
+                                    </div>
+                                    <div class="availability-status {{ hospital.facilities_detail.isolation.status }}" data-availability-status>
+                                        {% if hospital.facilities_detail.isolation.status == 'good' %}Good
+                                        {% elif hospital.facilities_detail.isolation.status == 'limited' %}Limited
+                                        {% elif hospital.facilities_detail.isolation.status == 'very_limited' %}Very Limited
+                                        {% else %}Full{% endif %}
+                                        <span data-availability-count>{{ hospital.facilities_detail.isolation.available }}/{{ hospital.facilities_detail.isolation.total }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- No Results -->
+        <div class="no-results">
+            <div class="no-results-icon">🏥</div>
+            <h3 class="no-results-title">No Hospitals Found</h3>
+            <p class="no-results-text">Try adjusting your search filters or increasing the search radius.</p>
+        </div>
+        {% endif %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="notice-banner">
+                <span class="notice-icon">ℹ️</span>
+                <div class="notice-text">
+                    <strong>Important Notice:</strong> Hospital availability is updated directly by hospital administrators. Please call the hospital to confirm bed availability before arrival.
+                </div>
+            </div>
+            <div class="footer-info">
+                <p><strong>CareConnect</strong> helps you find the right healthcare facility quickly and efficiently.</p>
+                <p style="margin-top: 8px;">For medical emergencies, please call emergency services immediately.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Compare Section (Sticky Bottom Bar) -->
+    <div class="compare-section" id="compareSection">
+        <div class="compare-content">
+            <div class="compare-info">
+                <span class="compare-count" id="compareCount">0</span> hospitals selected for comparison
+            </div>
+            <button class="compare-btn" id="compareBtn" onclick="goToComparison()" disabled>
+                Compare Hospitals →
+            </button>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    
+    <script src="{% static 'js/userapp.js' %}"></script>
+    <script>
+        // Make sure toggleSelectHospital and goToComparison are available
+        // These functions are defined in userapp.js
+        // If not found, define them here
+        if (typeof toggleSelectHospital === 'undefined') {
+            console.error('toggleSelectHospital function not found. Please check userapp.js is loaded.');
+        }
+        if (typeof goToComparison === 'undefined') {
+            console.error('goToComparison function not found. Please check userapp.js is loaded.');
+        }
+    </script>
+    <script>
+        // Hospital data from Django template
+        const hospitals = [
+            {% for hospital in hospitals %}
+            {
+                id: '{{ hospital.id_str }}',
+                name: '{{ hospital.name|escapejs }}',
+                address: '{{ hospital.address|escapejs }}',
+                city: '{{ hospital.city|escapejs }}',
+                phone: '{{ hospital.phone|escapejs }}',
+                distance: {{ hospital.distance }},
+                latitude: {{ hospital.latitude }},
+                longitude: {{ hospital.longitude }},
+                type: '{{ hospital.type|escapejs }}',
+                icu_available: {{ hospital.facilities_detail.icu.available }},
+                icu_total: {{ hospital.facilities_detail.icu.total }},
+                icu_status: '{{ hospital.facilities_detail.icu.status|escapejs }}',
+                oxygen_available: {{ hospital.facilities_detail.oxygen.available }},
+                oxygen_total: {{ hospital.facilities_detail.oxygen.total }},
+                ventilator_available: {{ hospital.facilities_detail.ventilator.available }},
+                ventilator_total: {{ hospital.facilities_detail.ventilator.total }},
+                isolation_available: {{ hospital.facilities_detail.isolation.available }},
+                isolation_total: {{ hospital.facilities_detail.isolation.total }}
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        let map = null;
+        let markers = [];
+        let currentView = 'list';
+
+        // Initialize map
+        function initMap(centerHospitalId = null) {
+            if (!hospitals || hospitals.length === 0) {
+                console.log('No hospitals data available');
+                return;
+            }
+
+            // Determine center point
+            let centerLat = 19.0760; // Default to Mumbai
+            let centerLng = 72.8777;
+            let zoom = 12;
+
+            if (centerHospitalId) {
+                // Center on specific hospital
+                const hospital = hospitals.find(h => h.id === centerHospitalId);
+                if (hospital && hospital.latitude && hospital.longitude) {
+                    centerLat = hospital.latitude;
+                    centerLng = hospital.longitude;
+                    zoom = 15;
+                }
+            } else if (hospitals.length > 0) {
+                // Center on average of all hospitals or first hospital
+                const validHospitals = hospitals.filter(h => h.latitude && h.longitude);
+                if (validHospitals.length > 0) {
+                    const sumLat = validHospitals.reduce((sum, h) => sum + h.latitude, 0);
+                    const sumLng = validHospitals.reduce((sum, h) => sum + h.longitude, 0);
+                    centerLat = sumLat / validHospitals.length;
+                    centerLng = sumLng / validHospitals.length;
+                }
+            }
+
+            // Initialize Leaflet map
+            if (!map) {
+                map = L.map('hospitalMap').setView([centerLat, centerLng], zoom);
+
+                // Add OpenStreetMap tiles
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    maxZoom: 19
+                }).addTo(map);
+            } else {
+                map.setView([centerLat, centerLng], zoom);
+            }
+
+            // Clear existing markers
+            markers.forEach(marker => map.removeLayer(marker));
+            markers = [];
+
+            // Add markers for each hospital
+            hospitals.forEach(hospital => {
+                if (hospital.latitude && hospital.longitude) {
+                    // Choose marker color based on hospital type
+                    const markerColor = hospital.type === 'government' ? 'green' : 'blue';
+                    const iconHtml = `
+                        <div style="
+                            background: ${markerColor === 'green' ? '#2e7d32' : '#1976d2'};
+                            width: 30px;
+                            height: 30px;
+                            border-radius: 50% 50% 50% 0;
+                            transform: rotate(-45deg);
+                            border: 3px solid white;
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        ">
+                            <span style="
+                                transform: rotate(45deg);
+                                color: white;
+                                font-size: 18px;
+                                font-weight: bold;
+                            ">🏥</span>
+                        </div>
+                    `;
+
+                    const icon = L.divIcon({
+                        html: iconHtml,
+                        className: 'custom-marker',
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 30],
+                        popupAnchor: [0, -30]
+                    });
+
+                    const marker = L.marker([hospital.latitude, hospital.longitude], { icon: icon })
+                        .addTo(map)
+                        .bindPopup(createPopupContent(hospital));
+
+                    markers.push(marker);
+                }
+            });
+
+            // If centering on specific hospital, open its popup
+            if (centerHospitalId) {
+                const marker = markers.find((m, idx) => hospitals[idx]?.id === centerHospitalId);
+                if (marker) {
+                    marker.openPopup();
+                }
+            }
+        }
+
+        // Create popup content for hospital marker
+        function createPopupContent(hospital) {
+            const statusClass = {
+                'good': 'good',
+                'limited': 'limited',
+                'very_limited': 'very_limited',
+                'full': 'full'
+            }[hospital.icu_status] || '';
+
+            const statusText = {
+                'good': 'Good',
+                'limited': 'Limited',
+                'very_limited': 'Very Limited',
+                'full': 'Full'
+            }[hospital.icu_status] || 'Unknown';
+
+            return `
+                <div class="map-popup-title">${hospital.name}</div>
+                <div class="map-popup-info">📍 ${hospital.distance} km away</div>
+                <div class="map-popup-info">📞 ${hospital.phone}</div>
+                <div class="map-popup-info">${hospital.address}</div>
+                <div class="map-popup-info" style="margin-top: 8px;">
+                    <strong>ICU:</strong> ${statusText} ${hospital.icu_available}/${hospital.icu_total}
+                </div>
+                <div class="map-popup-actions">
+                    <button class="map-popup-btn navigate" onclick="openNavigation('${hospital.latitude}', '${hospital.longitude}', '${hospital.name.replace(/'/g, "\\'")}', '${hospital.address.replace(/'/g, "\\'")}')">
+                        🧭 Navigate
+                    </button>
+                    <button class="map-popup-btn details" onclick="viewHospitalDetails('${hospital.id}')">
+                        📋 Details
+                    </button>
+                </div>
+            `;
+        }
+
+        // Toggle between list and map view
+        function toggleView(view) {
+            currentView = view;
+            
+            if (view === 'map') {
+                document.getElementById('listViewContainer').classList.add('hidden');
+                document.getElementById('mapViewContainer').classList.add('show');
+                document.getElementById('listViewBtn').classList.remove('active');
+                document.getElementById('mapViewBtn').classList.add('active');
+                
+                // Initialize map if not already initialized
+                if (!map) {
+                    setTimeout(() => initMap(), 100);
+                }
+            } else {
+                document.getElementById('listViewContainer').classList.remove('hidden');
+                document.getElementById('mapViewContainer').classList.remove('show');
+                document.getElementById('listViewBtn').classList.add('active');
+                document.getElementById('mapViewBtn').classList.remove('active');
+            }
+        }
+
+        // View specific hospital on map
+        function viewOnMap(hospitalId) {
+            // Switch to map view
+            toggleView('map');
+            
+            // Initialize map centered on this hospital
+            setTimeout(() => {
+                initMap(hospitalId);
+                // Scroll to map
+                document.getElementById('mapViewContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+
+        // Open navigation in Google Maps
+        function openNavigation(lat, lng, name, address) {
+            // Create Google Maps navigation URL
+            const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&destination_place_id=${encodeURIComponent(name + ', ' + address)}`;
+            window.open(googleMapsUrl, '_blank');
+        }
+
+        // View hospital details (scroll to card in list view)
+        function viewHospitalDetails(hospitalId) {
+            toggleView('list');
+            const hospitalCard = document.getElementById(`hospital-${hospitalId}`);
+            if (hospitalCard) {
+                setTimeout(() => {
+                    hospitalCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    hospitalCard.style.background = '#f8fbff';
+                    hospitalCard.style.border = '2px solid #1976d2';
+                    setTimeout(() => {
+                        hospitalCard.style.background = '';
+                        hospitalCard.style.border = '';
+                    }, 2000);
+                }, 100);
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if URL has map view parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('view') === 'map') {
+                toggleView('map');
+            }
+            
+            // Check if URL has hospital parameter to center on
+            const hospitalId = urlParams.get('hospital');
+            if (hospitalId && currentView === 'map') {
+                setTimeout(() => initMap(hospitalId), 200);
+            }
+        });
+    </script>
+</body>
+
+</html>

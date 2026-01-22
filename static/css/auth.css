@@ -1,0 +1,355 @@
+/* Authentication Pages CSS */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8f0f7 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.auth-container {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 520px;
+    padding: 48px 40px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.logo-section {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1976d2;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.logo-icon {
+    width: 36px;
+    height: 36px;
+    background: #1976d2;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 15px;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.page-description {
+    color: #666;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+/* Alert Messages */
+.alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    border-left: 4px solid;
+}
+
+.alert-success {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border-color: #2e7d32;
+}
+
+.alert-error {
+    background: #ffebee;
+    color: #c62828;
+    border-color: #c62828;
+}
+
+.alert-warning {
+    background: #fff3e0;
+    color: #e65100;
+    border-color: #e65100;
+}
+
+.alert-info {
+    background: #e3f2fd;
+    color: #0d47a1;
+    border-color: #0d47a1;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 24px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.required {
+    color: #d32f2f;
+    margin-left: 2px;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 18px;
+    pointer-events: none;
+}
+
+input, select {
+    width: 100%;
+    padding: 14px 14px 14px 44px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    background: #fafafa;
+    font-family: inherit;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #1976d2;
+    background: white;
+}
+
+input.error {
+    border-color: #d32f2f;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #999;
+    font-size: 18px;
+    user-select: none;
+}
+
+.password-toggle:hover {
+    color: #666;
+}
+
+.phone-group {
+    display: flex;
+    gap: 12px;
+}
+
+.phone-group select {
+    width: 120px;
+    padding-left: 14px;
+}
+
+.phone-group input {
+    flex: 1;
+}
+
+/* Buttons */
+.primary-btn {
+    width: 100%;
+    padding: 16px;
+    background: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+}
+
+.primary-btn:hover {
+    background: #1565c0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+}
+
+.primary-btn:active {
+    transform: translateY(0);
+}
+
+.primary-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.secondary-link {
+    text-align: center;
+    margin-top: 24px;
+    color: #666;
+    font-size: 14px;
+}
+
+.secondary-link a {
+    color: #1976d2;
+    text-decoration: none;
+}
+
+/* OTP Button Styles */
+.otp-btn {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.otp-btn:hover {
+    background: #1565c0 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.otp-btn:disabled {
+    background: #ccc !important;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* OTP Section Styles */
+#emailOtpSection, #phoneOtpSection {
+    margin-top: 8px;
+    padding: 12px;
+    background: #f5f7fa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.secondary-link a:hover {
+    text-decoration: underline;
+}
+
+/* Info Box */
+.info-box {
+    background: #e3f2fd;
+    border-left: 4px solid #1976d2;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    color: #0d47a1;
+}
+
+.info-box strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Role-specific fields */
+.role-specific-fields {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .auth-container {
+        padding: 32px 24px;
+        max-width: 100%;
+    }
+
+    .page-title {
+        font-size: 24px;
+    }
+
+    .phone-group {
+        flex-direction: column;
+    }
+
+    .phone-group select {
+        width: 100%;
+    }
+    
+    .logo {
+        font-size: 28px;
+    }
+    
+    .logo-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 18px;
+    }
+}
+
+/* Scrollbar Styling */
+.auth-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.auth-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.auth-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.auth-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

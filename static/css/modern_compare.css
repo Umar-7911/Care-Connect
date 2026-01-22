@@ -1,0 +1,517 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f7fa;
+    color: #333;
+    padding-bottom: 120px;
+}
+
+/* Header */
+.header {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 16px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    width: 40px;
+    height: 40px;
+    background: #1976d2;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1976d2;
+}
+
+.logo-tagline {
+    font-size: 12px;
+    color: #666;
+}
+
+.nav-links {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+}
+
+.nav-links a {
+    color: #555;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+    cursor: pointer;
+}
+
+.nav-links a:hover {
+    color: #1976d2;
+}
+
+.nav-links a.active {
+    color: #1976d2;
+    font-weight: 600;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    background: #e3f2fd;
+    border-radius: 8px;
+    color: #1976d2;
+    font-weight: 600;
+}
+
+/* Page Header */
+.page-header {
+    background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+    color: white;
+    padding: 40px 24px;
+    text-align: center;
+}
+
+.page-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.page-subtitle {
+    font-size: 16px;
+    opacity: 0.95;
+}
+
+/* Main Content */
+.main-content {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 24px;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: white;
+    border: 2px solid #1976d2;
+    color: #1976d2;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 24px;
+    text-decoration: none;
+}
+
+.back-button:hover {
+    background: #1976d2;
+    color: white;
+}
+
+/* Comparison Container */
+.comparison-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    overflow-x: auto;
+    position: relative;
+}
+
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+/* Table Header - Sticky */
+.comparison-table thead th {
+    position: sticky;
+    top: 72px;
+    background: white;
+    z-index: 30;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    font-weight: 600;
+    vertical-align: top;
+}
+
+.comparison-table thead th:first-child {
+    left: 0;
+    z-index: 40;
+    background: #f8f9fa;
+    color: #666;
+    font-size: 14px;
+}
+
+/* Hospital Header Cells */
+.hospital-header-cell {
+    text-align: center;
+    min-width: 280px;
+}
+
+.hospital-radio {
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.hospital-selection-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 60px;
+}
+
+.hospital-name-main {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+}
+
+.hospital-badges {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.badge.government {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badge.private {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.badge.verified {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.badge.highlight {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badge.best-match {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.badge.cost-efficient {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.hospital-distance {
+    color: #666;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+/* Table Body */
+.comparison-table tbody td {
+    padding: 16px 20px;
+    border: 1px solid #e0e0e0;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* First Column - Parameter Names - Sticky */
+.comparison-table tbody td:first-child {
+    position: sticky;
+    left: 0;
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+    text-align: left;
+    z-index: 20;
+    min-width: 250px;
+}
+
+/* Section Headers */
+.section-header-row td {
+    background: #1976d2 !important;
+    color: white !important;
+    font-weight: 700;
+    font-size: 16px;
+    text-align: left !important;
+    padding: 16px 20px !important;
+}
+
+.section-header-row td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 25;
+}
+
+/* Availability Status */
+.availability-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.availability-status.available {
+    color: #2e7d32;
+}
+
+.availability-status.limited {
+    color: #f57c00;
+}
+
+.availability-status.unavailable {
+    color: #c62828;
+}
+
+/* Facility Check */
+.facility-check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.facility-check.yes {
+    color: #2e7d32;
+}
+
+.facility-check.no {
+    color: #999;
+}
+
+/* Pricing */
+.price-range {
+    text-align: center;
+}
+
+.price-amount {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1976d2;
+    margin-bottom: 4px;
+}
+
+.price-label {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Last Updated */
+.update-info {
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+}
+
+.update-time {
+    font-weight: 600;
+    color: #2e7d32;
+}
+
+/* Disclaimer */
+.disclaimer {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin-top: 32px;
+    margin-bottom: 32px;
+    font-size: 14px;
+    color: #856404;
+}
+
+/* Action Section */
+.action-section {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    z-index: 50;
+}
+
+.action-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.action-info {
+    font-size: 14px;
+    color: #666;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 16px;
+}
+
+.btn-primary {
+    padding: 14px 32px;
+    background: #2e7d32;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary:hover {
+    background: #1b5e20;
+}
+
+.btn-secondary {
+    padding: 14px 32px;
+    background: white;
+    color: #1976d2;
+    border: 2px solid #1976d2;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-secondary:hover {
+    background: #1976d2;
+    color: white;
+}
+
+/* No Results */
+.no-results {
+    text-align: center;
+    padding: 80px 20px;
+    background: white;
+    border-radius: 12px;
+    margin: 40px auto;
+    max-width: 600px;
+}
+
+.no-results h3 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.no-results p {
+    color: #666;
+    margin-bottom: 24px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+
+    .comparison-table thead th:first-child,
+    .comparison-table tbody td:first-child {
+        min-width: 200px;
+    }
+
+    .hospital-header-cell {
+        min-width: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 16px;
+    }
+
+    .page-title {
+        font-size: 24px;
+    }
+
+    .action-content {
+        flex-direction: column;
+    }
+
+    .action-buttons {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+    }
+
+    .comparison-table thead th:first-child,
+    .comparison-table tbody td:first-child {
+        min-width: 180px;
+    }
+
+    .hospital-header-cell {
+        min-width: 220px;
+    }
+}

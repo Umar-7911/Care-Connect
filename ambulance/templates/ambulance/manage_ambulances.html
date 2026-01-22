@@ -1,0 +1,734 @@
+{% extends 'ambulance/base_ambulance.html' %}
+
+{% block title %}Manage Ambulances - CareConnect{% endblock %}
+
+{% block content %}
+<style>
+    /* Advanced Manage Ambulances Styles */
+    .search-filter-bar {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .search-filter-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 1rem;
+        align-items: end;
+    }
+
+    .search-input {
+        position: relative;
+    }
+
+    .search-input input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.75rem;
+        border: 2px solid #E5E7EB;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+    }
+
+    .search-input input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .search-input svg {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9CA3AF;
+    }
+
+    .filter-select {
+        padding: 0.75rem 1rem;
+        border: 2px solid #E5E7EB;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .filter-select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .bulk-actions {
+        display: none;
+        background: #F3F4F6;
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .bulk-actions.active {
+        display: flex;
+    }
+
+    .ambulance-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .ambulance-card:hover {
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .ambulance-card.editing {
+        border: 2px solid #667eea;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+    }
+
+    /* Improved Edit Mode Styles - Replacing Overlay with Inline */
+    .view-mode {
+        display: block;
+    }
+
+    .edit-mode {
+        display: none;
+        background: #F9FAFB;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        border: 1px solid #E5E7EB;
+    }
+
+    .edit-mode.active {
+        display: block;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .btn-icon {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-edit {
+        background: #EEF2FF;
+        color: #667eea;
+    }
+
+    .btn-edit:hover {
+        background: #667eea;
+        color: white;
+    }
+
+    .btn-delete {
+        background: #FEE2E2;
+        color: #DC2626;
+    }
+
+    .btn-delete:hover {
+        background: #DC2626;
+        color: white;
+    }
+
+    .btn-save {
+        background: #10B981;
+        color: white;
+    }
+
+    .btn-save:hover {
+        background: #059669;
+    }
+
+    .btn-cancel {
+        background: #6B7280;
+        color: white;
+    }
+
+    .btn-cancel:hover {
+        background: #4B5563;
+    }
+
+    .checkbox-select {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        accent-color: #667eea;
+    }
+
+    .driver-info {
+        background: #F9FAFB;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1rem;
+        border-left: 4px solid #667eea;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .empty-state svg {
+        margin: 0 auto 1.5rem;
+        opacity: 0.3;
+    }
+
+
+
+    .sort-btn {
+        background: white;
+        border: 2px solid #E5E7EB;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .sort-btn:hover {
+        border-color: #667eea;
+        color: #667eea;
+    }
+
+    .sort-btn.active {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+    }
+
+    @media (max-width: 768px) {
+        .search-filter-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="page-header">
+    <h2>Manage Ambulances</h2>
+    <p class="subtitle">Advanced fleet management with real-time tracking</p>
+</div>
+
+<!-- Search and Filter Bar -->
+<div class="search-filter-bar">
+    <div class="search-filter-grid">
+        <div class="search-input">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" />
+            </svg>
+            <input type="text" id="search-input" placeholder="Search by ambulance number, driver name..." />
+        </div>
+        <div>
+            <select id="type-filter" class="filter-select">
+                <option value="">All Types</option>
+                <option value="ALS">ALS</option>
+                <option value="BLS">BLS</option>
+                <option value="Non-Emergency">Non-Emergency</option>
+            </select>
+        </div>
+        <div>
+            <select id="status-filter" class="filter-select">
+                <option value="">All Status</option>
+                <option value="available">Available</option>
+                <option value="unavailable">Unavailable</option>
+            </select>
+        </div>
+
+    </div>
+</div>
+
+<!-- Bulk Actions Bar -->
+<div class="bulk-actions" id="bulk-actions-bar">
+    <input type="checkbox" id="select-all" class="checkbox-select" />
+    <span id="selected-count">0 selected</span>
+    <button class="btn-icon btn-delete" onclick="bulkDelete()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path fill-rule="evenodd"
+                d="M5 3a2 2 0 012-2h2a2 2 0 012 2h4a1 1 0 110 2h-1v9a2 2 0 01-2 2H4a2 2 0 01-2-2V5H1a1 1 0 010-2h4z" />
+        </svg>
+        Delete Selected
+    </button>
+    <button class="btn-icon btn-save" onclick="bulkSetAvailable(true)">
+        Set Available
+    </button>
+    <button class="btn-icon btn-cancel" onclick="bulkSetAvailable(false)">
+        Set Unavailable
+    </button>
+</div>
+
+<div class="note-box info" style="margin-bottom: 2rem;">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" />
+    </svg>
+    <div>
+        <strong>Fleet Management</strong><br>
+        Use the advanced tools below to manage your ambulance fleet. Click edit to modify details, or use bulk actions
+        for multiple ambulances.
+    </div>
+</div>
+
+<!-- Add New Ambulance Form -->
+<div class="ambulance-card">
+    <div class="ambulance-header">
+        <div class="ambulance-id">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 4v16m8-8H4" />
+            </svg>
+            <h3>Add New Ambulance</h3>
+        </div>
+    </div>
+
+    <form method="post" id="add-ambulance-form">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add">
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group">
+                <label class="form-label">Ambulance Number/ID *</label>
+                <input type="text" name="ambulance_number" class="form-input" placeholder="e.g., AMB-001" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Ambulance Type *</label>
+                <select name="ambulance_type" class="form-select" required>
+                    <option value="">Select type</option>
+                    <option value="ALS">ALS - Advanced Life Support</option>
+                    <option value="BLS">BLS - Basic Life Support</option>
+                    <option value="Non-Emergency">Non-Emergency Transport</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group">
+                <label class="form-label">Driver Name</label>
+                <input type="text" name="driver_name" class="form-input" placeholder="e.g., John Doe">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Driver Phone</label>
+                <input type="tel" name="driver_phone" class="form-input" placeholder="e.g., +91 98765 43210">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Facilities</label>
+            <div class="checkbox-group">
+                {% for facility in available_facilities %}
+                <div class="checkbox-item">
+                    <input type="checkbox" name="facilities" value="{{ facility }}" class="checkbox"
+                        id="new_{{ facility|slugify }}">
+                    <label for="new_{{ facility|slugify }}" class="checkbox-label">{{ facility }}</label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="checkbox-item">
+                <input type="checkbox" name="is_available" class="checkbox" id="new_available" checked>
+                <label for="new_available" class="checkbox-label">Mark as Available</label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+            </svg>
+            Add Ambulance
+        </button>
+    </form>
+</div>
+
+<!-- Existing Ambulances -->
+<div style="margin-top: 2.5rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1.125rem; font-weight: 600;">Your Ambulances (<span id="filtered-count">{{ ambulances|length }}</span>)</h3>
+        <div style="display: flex; gap: 0.5rem;">
+            <button class="sort-btn" onclick="sortAmbulances('number')">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M3 3h10M3 8h7M3 13h4" />
+                </svg>
+                Sort by Number
+            </button>
+            <button class="sort-btn" onclick="sortAmbulances('type')">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M3 3h10M3 8h7M3 13h4" />
+                </svg>
+                Sort by Type
+            </button>
+        </div>
+    </div>
+
+    <div id="ambulances-list">
+        {% if ambulances %}
+        {% for ambulance in ambulances %}
+        <div class="ambulance-card ambulance-item" data-number="{{ ambulance.number }}" data-type="{{ ambulance.type }}"
+            data-status="{% if ambulance.is_available %}available{% else %}unavailable{% endif %}"
+            data-driver="{{ ambulance.driver_name }}">
+
+            <!-- View Mode -->
+            <div id="view-{{ ambulance.number }}" class="view-mode">
+                <div class="ambulance-header">
+                    <div class="ambulance-id" style="display: flex; align-items: center; gap: 1rem;">
+                        <input type="checkbox" class="checkbox-select ambulance-checkbox"
+                            data-number="{{ ambulance.number }}">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+                            <path
+                                d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3z" />
+                        </svg>
+                        <div>
+                            <h3>{{ ambulance.number }}</h3>
+                            <span
+                                class="badge badge-{% if ambulance.type == 'ALS' %}red{% elif ambulance.type == 'BLS' %}green{% else %}gray{% endif %}">
+                                {{ ambulance.type }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="availability-toggle">
+                        <span class="availability-label">
+                            {% if ambulance.is_available %}Available{% else %}Unavailable{% endif %}
+                        </span>
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="toggle_availability">
+                            <input type="hidden" name="ambulance_number" value="{{ ambulance.number }}">
+                            <input type="hidden" name="is_available"
+                                value="{% if ambulance.is_available %}false{% else %}true{% endif %}">
+                            <button type="submit" class="toggle-switch {% if ambulance.is_available %}active{% endif %}"
+                                style="border: none; cursor: pointer;"></button>
+                        </form>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <strong style="font-size: 0.875rem; color: #6B7280;">Facilities:</strong>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+                        {% for facility in ambulance.facilities %}
+                        <span class="badge badge-blue">{{ facility }}</span>
+                        {% empty %}
+                        <span style="font-size: 0.875rem; color: #9CA3AF;">No facilities listed</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {% if ambulance.driver_name and ambulance.driver_name != 'Not Assigned' %}
+                <div class="driver-info">
+                    <strong style="font-size: 0.875rem; color: #374151;">Driver Information</strong>
+                    <div style="margin-top: 0.5rem; font-size: 0.875rem; color: #6B7280;">
+                        <div>👤 {{ ambulance.driver_name }}</div>
+                        <div>📞 {{ ambulance.driver_phone }}</div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="action-buttons">
+                    <button class="btn-icon btn-edit" onclick="editAmbulance('{{ ambulance.number }}')">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path
+                                d="M11.013 1.427a1.75 1.75 0 012.474 0l1.086 1.086a1.75 1.75 0 010 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 01-.927-.928l.929-3.25a1.75 1.75 0 01.445-.758l8.61-8.61z" />
+                        </svg>
+                        Edit
+                    </button>
+                    <form method="post" style="display: inline;"
+                        onsubmit="return confirm('⚠️ WARNING: Are you sure you want to permanently delete ambulance {{ ambulance.number }}? This action cannot be undone!');">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="ambulance_number" value="{{ ambulance.number }}">
+                        <button type="submit" class="btn-icon btn-delete">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M5 3a2 2 0 012-2h2a2 2 0 012 2h4a1 1 0 110 2h-1v9a2 2 0 01-2 2H4a2 2 0 01-2-2V5H1a1 1 0 010-2h4z" />
+                            </svg>
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Edit Mode (Inline) -->
+            <div id="edit-{{ ambulance.number }}" class="edit-mode">
+                <h4 style="margin-bottom: 1rem; color: #667eea; display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path
+                            d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                    </svg>
+                    Edit Details: {{ ambulance.number }}
+                </h4>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="edit">
+                    <input type="hidden" name="ambulance_number" value="{{ ambulance.number }}">
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Ambulance Type</label>
+                            <select name="ambulance_type" class="form-select">
+                                <option value="ALS" {% if ambulance.type == 'ALS' %}selected{% endif %}>ALS</option>
+                                <option value="BLS" {% if ambulance.type == 'BLS' %}selected{% endif %}>BLS</option>
+                                <option value="Non-Emergency" {% if ambulance.type == 'Non-Emergency' %}selected{% endif %}>Non-Emergency</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Driver Name</label>
+                            <input type="text" name="driver_name" class="form-input"
+                                value="{{ ambulance.driver_name }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label class="form-label">Driver Phone</label>
+                        <input type="tel" name="driver_phone" class="form-input" value="{{ ambulance.driver_phone }}">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label class="form-label">Facilities</label>
+                        <div class="checkbox-group">
+                            {% for facility in available_facilities %}
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="facilities" value="{{ facility }}" class="checkbox"
+                                    id="edit_{{ ambulance.number|slugify }}_{{ facility|slugify }}" {% if facility in ambulance.facilities %}checked{% endif %}>
+                                <label for="edit_{{ ambulance.number|slugify }}_{{ facility|slugify }}"
+                                    class="checkbox-label">{{ facility }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div
+                        style="display: flex; gap: 0.5rem; border-top: 1px solid #E5E7EB; padding-top: 1rem; margin-top: 1rem;">
+                        <button type="submit" class="btn-icon btn-save">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path
+                                    d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" />
+                            </svg>
+                            Save Changes
+                        </button>
+                        <button type="button" class="btn-icon btn-cancel"
+                            onclick="cancelEdit('{{ ambulance.number }}')">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+                <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3z" />
+            </svg>
+            <h3 style="color: #374151; margin-bottom: 0.5rem;">No Ambulances Yet</h3>
+            <p style="color: #6B7280;">Add your first ambulance using the form above to get started.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    // Search and Filter Functionality
+    const searchInput = document.getElementById('search-input');
+    const typeFilter = document.getElementById('type-filter');
+    const statusFilter = document.getElementById('status-filter');
+    const ambulanceItems = document.querySelectorAll('.ambulance-item');
+
+    function filterAmbulances() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedType = typeFilter.value;
+        const selectedStatus = statusFilter.value;
+        let visibleCount = 0;
+
+        ambulanceItems.forEach(item => {
+            const number = item.dataset.number.toLowerCase();
+            const driver = item.dataset.driver.toLowerCase();
+            const type = item.dataset.type;
+            const status = item.dataset.status;
+
+            const matchesSearch = number.includes(searchTerm) || driver.includes(searchTerm);
+            const matchesType = !selectedType || type === selectedType;
+            const matchesStatus = !selectedStatus || status === selectedStatus;
+
+            if (matchesSearch && matchesType && matchesStatus) {
+                item.style.display = 'block';
+                visibleCount++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        document.getElementById('filtered-count').textContent = visibleCount;
+    }
+
+    searchInput.addEventListener('input', filterAmbulances);
+    typeFilter.addEventListener('change', filterAmbulances);
+    statusFilter.addEventListener('change', filterAmbulances);
+
+    // Edit Functionality - Inline Mode
+    function editAmbulance(number) {
+        const viewDiv = document.getElementById('view-' + number);
+        const editDiv = document.getElementById('edit-' + number);
+        const card = viewDiv.closest('.ambulance-card');
+
+        viewDiv.style.display = 'none';
+        editDiv.style.display = 'block';
+        editDiv.classList.add('active');
+        card.classList.add('editing');
+    }
+
+    function cancelEdit(number) {
+        const viewDiv = document.getElementById('view-' + number);
+        const editDiv = document.getElementById('edit-' + number);
+        const card = viewDiv.closest('.ambulance-card');
+
+        editDiv.style.display = 'none';
+        viewDiv.style.display = 'block';
+        editDiv.classList.remove('active');
+        card.classList.remove('editing');
+    }
+
+    // Bulk Selection
+    const selectAllCheckbox = document.getElementById('select-all');
+    const ambulanceCheckboxes = document.querySelectorAll('.ambulance-checkbox');
+    const bulkActionsBar = document.getElementById('bulk-actions-bar');
+    const selectedCountSpan = document.getElementById('selected-count');
+
+    function updateBulkActions() {
+        const selectedCheckboxes = document.querySelectorAll('.ambulance-checkbox:checked');
+        const count = selectedCheckboxes.length;
+
+        if (count > 0) {
+            bulkActionsBar.classList.add('active');
+            selectedCountSpan.textContent = count + ' selected';
+        } else {
+            bulkActionsBar.classList.remove('active');
+        }
+    }
+
+    selectAllCheckbox.addEventListener('change', function () {
+        ambulanceCheckboxes.forEach(checkbox => {
+            if (checkbox.closest('.ambulance-item').style.display !== 'none') {
+                checkbox.checked = this.checked;
+            }
+        });
+        updateBulkActions();
+    });
+
+    ambulanceCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateBulkActions);
+    });
+
+    // Bulk Actions
+    function bulkDelete() {
+        const selected = Array.from(document.querySelectorAll('.ambulance-checkbox:checked'))
+            .map(cb => cb.dataset.number);
+
+        if (selected.length === 0) return;
+
+        if (confirm(`⚠️ WARNING: Are you sure you want to delete ${selected.length} ambulance(s)? This action cannot be undone!`)) {
+            // Create and submit form for each selected ambulance
+            selected.forEach(number => {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.innerHTML = `
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete">
+                <input type="hidden" name="ambulance_number" value="${number}">
+            `;
+                document.body.appendChild(form);
+                form.submit();
+            });
+        }
+    }
+
+    function bulkSetAvailable(status) {
+        const selected = Array.from(document.querySelectorAll('.ambulance-checkbox:checked'))
+            .map(cb => cb.dataset.number);
+
+        if (selected.length === 0) return;
+
+        // Submit availability changes
+        selected.forEach(number => {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.innerHTML = `
+            {% csrf_token %}
+            <input type="hidden" name="action" value="toggle_availability">
+            <input type="hidden" name="ambulance_number" value="${number}">
+            <input type="hidden" name="is_available" value="${status}">
+        `;
+            document.body.appendChild(form);
+            form.submit();
+        });
+    }
+
+    // Sort Functionality
+    let currentSort = { field: null, ascending: true };
+
+    function sortAmbulances(field) {
+        const container = document.getElementById('ambulances-list');
+        const items = Array.from(ambulanceItems);
+
+        if (currentSort.field === field) {
+            currentSort.ascending = !currentSort.ascending;
+        } else {
+            currentSort.field = field;
+            currentSort.ascending = true;
+        }
+
+        items.sort((a, b) => {
+            let aVal = a.dataset[field].toLowerCase();
+            let bVal = b.dataset[field].toLowerCase();
+
+            if (currentSort.ascending) {
+                return aVal > bVal ? 1 : -1;
+            } else {
+                return aVal < bVal ? 1 : -1;
+            }
+        });
+
+        items.forEach(item => container.appendChild(item));
+
+        // Update button states
+        document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.closest('.sort-btn').classList.add('active');
+    }
+
+
+</script>
+{% endblock %}

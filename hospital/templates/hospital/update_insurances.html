@@ -1,0 +1,50 @@
+﻿{% extends 'hospital/base_hospital.html' %}
+
+{% block title %}Update Insurance Providers - CareConnect{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h2>Update Insurance Providers</h2>
+    <p class="subtitle">Manage accepted insurance providers at your hospital</p>
+</div>
+
+<div class="info-banner">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5" />
+        <path d="M10 10V14M10 6V7" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+    </svg>
+    <div>
+        <strong>Insurance Information</strong><br>
+        Select all insurance providers accepted at your hospital. This helps patients plan their treatment costs.
+    </div>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="facilities-list">
+        {% for insurance in available_insurances %}
+        <div class="facility-item">
+            <div>
+                <h3>{{ insurance.name }}</h3>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" name="{{ insurance.id }}" value="1" {% if insurance.name in current_insurances %}checked{% endif %}>
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="form-actions">
+        <a href="{% url 'hospital:dashboard' %}" class="btn-secondary">Cancel</a>
+        <button type="submit" class="btn-primary">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M16 5L7.5 13.5L4 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+            Update Insurance Providers
+        </button>
+    </div>
+</form>
+{% endblock %}

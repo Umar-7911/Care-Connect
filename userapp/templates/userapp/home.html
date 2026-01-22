@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareConnect - Find Hospitals</title>
+    <link rel="stylesheet" href="{% static 'css/userapp.css' %}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-container">
+                <div class="logo-icon">+</div>
+                <div class="logo-text">
+                    <div class="logo-title">CareConnect</div>
+                    <div class="logo-tagline">Right Care. Right Time.</div>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="{% url 'userapp:home' %}" {% if request.resolver_match.url_name == 'home' %}class="active" {% endif %}>Home</a>
+
+                <a href="{% url 'userapp:results' %}" {% if request.resolver_match.url_name == 'search' or request.resolver_match.url_name == 'results' %}class="active" {% endif %}>Results</a>
+
+                <a href="{% url 'userapp:compare' %}" {% if request.resolver_match.url_name == 'compare' %}class="active" {% endif %}>Compare Hospitals</a>
+
+                <a href="{% url 'userapp:ambulances' %}" {% if request.resolver_match.url_name == 'ambulances' or request.resolver_match.url_name == 'book_ambulance' %}class="active" {% endif %}>Ambulances</a>
+
+                <div class="user-info">
+                    <span>👤</span>
+                    <span id="username">{{ username|default:request.user.email|default:request.user.username }}</span>
+                </div>
+                <a href="{% url 'core:logout' %}" style="color:#d32f2f;">Sign Out</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Search Section -->
+        <section class="search-section">
+            <h1 class="search-title">Find Emergency Healthcare</h1>
+            <p class="search-subtitle">Search for hospitals with real-time bed availability</p>
+
+            <form method="GET" action="{% url 'userapp:search' %}" class="search-form" id="searchForm">
+                <div class="form-group full-width">
+                    <label for="search_type">🔍 Search By</label>
+                    <select id="search_type" name="search_type" onchange="toggleSearchMode()">
+                        <option value="name">Hospital Name</option>
+                        <option value="location" selected>Location & Filters</option>
+                    </select>
+                </div>
+
+                <!-- Hospital Name Search -->
+                <div id="nameSearchSection" class="form-group full-width" style="display: none;">
+                    <label for="hospital_name">🏥 Hospital Name</label>
+                    <input type="text" id="hospital_name" name="hospital_name" placeholder="Enter hospital name">
+                </div>
+
+                <!-- Location & Filters Search -->
+                <div id="locationSearchSection">
+                    <div class="form-group full-width">
+                        <label for="location">📍 Your Location</label>
+                        <input type="text" id="location" name="location" placeholder="Enter city or area">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>🏥 Hospital Type</label>
+                        <select id="hospital_type" name="hospital_type">
+                            <option value="all">All Hospitals</option>
+                            <option value="government">Government</option>
+                            <option value="private">Private</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>🛏️ Required Facilities (Select all that apply)</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item" onclick="toggleCheckbox(this)">
+                                <input type="checkbox" name="facility" value="icu">
+                                <span>ICU Bed</span>
+                            </label>
+                            <label class="checkbox-item" onclick="toggleCheckbox(this)">
+                                <input type="checkbox" name="facility" value="oxygen">
+                                <span>Oxygen Bed</span>
+                            </label>
+                            <label class="checkbox-item" onclick="toggleCheckbox(this)">
+                                <input type="checkbox" name="facility" value="ventilator">
+                                <span>Ventilator</span>
+                            </label>
+                            <label class="checkbox-item" onclick="toggleCheckbox(this)">
+                                <input type="checkbox" name="facility" value="isolation">
+                                <span>Isolation Ward</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="search-btn">🔍 Find Hospitals</button>
+            </form>
+
+            <div class="disclaimer">
+                ⚠️ <strong>Important:</strong> Hospital availability is manually updated by hospital staff. Always call the hospital before arrival to confirm bed availability.
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" style="background: #f5f7fa; border-top: 1px solid #e0e0e0; padding: 40px 24px; margin-top: 60px;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="background: #e3f2fd; border-left: 4px solid #1976d2; padding: 16px 20px; border-radius: 8px; margin-bottom: 24px; display: flex; align-items: start; gap: 12px;">
+                <span style="color: #1976d2; font-size: 20px; flex-shrink: 0;">ℹ️</span>
+                <div style="font-size: 14px; color: #1565c0; line-height: 1.6;">
+                    <strong style="color: #0d47a1;">Important Notice:</strong> Hospital availability is updated directly by hospital administrators. Please call the hospital to confirm bed availability before arrival.
+                </div>
+            </div>
+            <div style="text-align: center; color: #666; font-size: 14px; line-height: 1.8;">
+                <p><strong style="color: #333;">CareConnect</strong> helps you find the right healthcare facility quickly and efficiently.</p>
+                <p style="margin-top: 8px;">For medical emergencies, please call emergency services immediately.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/userapp.js' %}"></script>
+    <script>
+        function toggleSearchMode() {
+            const searchType = document.getElementById('search_type').value;
+            const nameSection = document.getElementById('nameSearchSection');
+            const locationSection = document.getElementById('locationSearchSection');
+            const hospitalNameInput = document.getElementById('hospital_name');
+            const locationInput = document.getElementById('location');
+            
+            if (searchType === 'name') {
+                nameSection.style.display = 'block';
+                locationSection.style.display = 'none';
+                hospitalNameInput.required = true;
+                locationInput.required = false;
+                // Clear location-based filters when switching to name search
+                document.getElementById('hospital_type').value = 'all';
+                document.querySelectorAll('input[name="facility"]').forEach(cb => cb.checked = false);
+            } else {
+                nameSection.style.display = 'none';
+                locationSection.style.display = 'block';
+                hospitalNameInput.required = false;
+                locationInput.required = true;
+                // Clear hospital name when switching to location search
+                hospitalNameInput.value = '';
+            }
+        }
+        
+        // Form validation
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            const searchType = document.getElementById('search_type').value;
+            const hospitalName = document.getElementById('hospital_name').value.trim();
+            const location = document.getElementById('location').value.trim();
+            
+            if (searchType === 'name') {
+                if (!hospitalName) {
+                    e.preventDefault();
+                    alert('Please enter a hospital name to search');
+                    return false;
+                }
+            } else {
+                if (!location) {
+                    e.preventDefault();
+                    alert('Please enter a location to search');
+                    return false;
+                }
+            }
+        });
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleSearchMode();
+        });
+    </script>
+</body>
+</html>

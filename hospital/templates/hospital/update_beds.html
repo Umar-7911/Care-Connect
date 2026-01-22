@@ -1,0 +1,309 @@
+{% extends 'hospital/base_hospital.html' %}
+
+{% block title %}Update Bed Availability - CareConnect{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h2>Update Bed Availability</h2>
+    <p class="subtitle">Update real-time bed availability for patients</p>
+</div>
+
+<div class="info-banner">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5" />
+        <path d="M10 10V14M10 6V7" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+    </svg>
+    <div>
+        <strong>Important Note</strong><br>
+        Availability updates are visible to patients in real-time. Please ensure accuracy.
+    </div>
+</div>
+
+<style>
+    .bed-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+    .bed-column {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+    @media (max-width: 1024px) {
+        .bed-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<form method="post" class="form-section">
+    {% csrf_token %}
+
+    <div class="bed-grid">
+        <!-- LEFT: Available beds (unchanged UI/logic) -->
+        <div class="bed-column">
+            <!-- Total Beds -->
+            <div class="bed-type-card">
+                <div class="bed-type-header">
+                    <div class="bed-icon" style="background: #EFF6FF; color: #2563EB;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="11" width="18" height="9" rx="2" stroke="currentColor" stroke-width="2" />
+                            <path d="M3 15H21" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>General Beds</h3>
+                        <p>Standard hospital beds</p>
+                    </div>
+                </div>
+                <div class="bed-controls">
+                    <div class="control-group">
+                        <label>Total Beds Available</label>
+                        <input type="number" name="total_beds" value="{{ beds.total|default:0 }}" min="0" class="number-input"
+                            style="text-align: center; padding: 12px; border: 1px solid #D1D5DB; border-radius: 8px; width: 100%;"
+                            required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ICU Beds -->
+            <div class="bed-type-card">
+                <div class="bed-type-header">
+                    <div class="bed-icon" style="background: #DCFCE7; color: #16A34A;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path
+                                d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                                stroke="currentColor" stroke-width="2" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>ICU Beds</h3>
+                        <p>Intensive Care Unit beds</p>
+                    </div>
+                </div>
+                <div class="bed-controls">
+                    <div class="control-group">
+                        <label>ICU Beds Available</label>
+                        <input type="number" name="icu_beds" value="{{ beds.icu|default:0 }}" min="0" class="number-input"
+                            style="text-align: center; padding: 12px; border: 1px solid #D1D5DB; border-radius: 8px; width: 100%;"
+                            required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Oxygen Beds -->
+            <div class="bed-type-card">
+                <div class="bed-type-header">
+                    <div class="bed-icon" style="background: #FEF3C7; color: #D97706;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="18" r="4" stroke="currentColor" stroke-width="2" />
+                            <path d="M12 2V12M12 12L8 8M12 12L16 8" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>Oxygen Beds</h3>
+                        <p>Beds with oxygen support</p>
+                    </div>
+                </div>
+                <div class="bed-controls">
+                    <div class="control-group">
+                        <label>Oxygen Beds Available</label>
+                        <input type="number" name="oxygen_beds" value="{{ beds.oxygen|default:0 }}" min="0" class="number-input"
+                            style="text-align: center; padding: 12px; border: 1px solid #D1D5DB; border-radius: 8px; width: 100%;"
+                            required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ventilators -->
+            <div class="bed-type-card">
+                <div class="bed-type-header">
+                    <div class="bed-icon" style="background: #F3E8FF; color: #9333EA;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path
+                                d="M3 12H6M6 12C6 14.2091 7.79086 16 10 16H12M6 12C6 9.79086 7.79086 8 10 8H12M12 8V5M12 8V16M12 16V19"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>Ventilators</h3>
+                        <p>Mechanical ventilation equipment</p>
+                    </div>
+                </div>
+                <div class="bed-controls">
+                    <div class="control-group">
+                        <label>Ventilators Available</label>
+                        <input type="number" name="ventilators" value="{{ beds.ventilator|default:0 }}" min="0"
+                            class="number-input"
+                            style="text-align: center; padding: 12px; border: 1px solid #D1D5DB; border-radius: 8px; width: 100%;"
+                            required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Isolation Beds -->
+            <div class="bed-type-card">
+                <div class="bed-type-header">
+                    <div class="bed-icon" style="background: #FEE2E2; color: #DC2626;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="11" width="18" height="9" rx="2" stroke="currentColor" stroke-width="2" />
+                            <path d="M3 15H21" stroke="currentColor" stroke-width="2" />
+                            <circle cx="12" cy="6" r="2" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>Isolation Beds</h3>
+                        <p>Isolation ward beds</p>
+                    </div>
+                </div>
+                <div class="bed-controls">
+                    <div class="control-group">
+                        <label>Isolation Beds Available</label>
+                        <input type="number" name="isolation_beds" value="{{ beds.isolation|default:0 }}" min="0"
+                            class="number-input"
+                            style="text-align: center; padding: 12px; border: 1px solid #D1D5DB; border-radius: 8px; width: 100%;"
+                            required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Total capacity (separate inputs, same visual style) -->
+        <div class="bed-column">
+            <div class="bed-type-card">
+                <div class="bed-type-header">
+                    <div class="bed-icon" style="background: #EFF6FF; color: #2563EB;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="11" width="18" height="9" rx="2" stroke="currentColor" stroke-width="2" />
+                            <path d="M3 15H21" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>Total General Beds</h3>
+                        <p>Overall capacity</p>
+                    </div>
+                </div>
+                <div class="bed-controls">
+                    <div class="control-group">
+                        <label>Total Capacity</label>
+                        <input type="number" name="total_beds_capacity" value="{{ beds.total_capacity|default:0 }}" min="0" class="number-input"
+                            style="text-align: center; padding: 12px; border: 1px solid #D1D5DB; border-radius: 8px; width: 100%;"
+                            >
+                    </div>
+                </div>
+            </div>
+
+            <div class="bed-type-card">
+                <div class="bed-type-header">
+                    <div class="bed-icon" style="background: #DCFCE7; color: #16A34A;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path
+                                d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                                stroke="currentColor" stroke-width="2" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>Total ICU Beds</h3>
+                        <p>Overall capacity</p>
+                    </div>
+                </div>
+                <div class="bed-controls">
+                    <div class="control-group">
+                        <label>Total Capacity</label>
+                        <input type="number" name="icu_beds_capacity" value="{{ beds.icu_capacity|default:0 }}" min="0" class="number-input"
+                            style="text-align: center; padding: 12px; border: 1px solid #D1D5DB; border-radius: 8px; width: 100%;"
+                            >
+                    </div>
+                </div>
+            </div>
+
+            <div class="bed-type-card">
+                <div class="bed-type-header">
+                    <div class="bed-icon" style="background: #FEF3C7; color: #D97706;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="18" r="4" stroke="currentColor" stroke-width="2" />
+                            <path d="M12 2V12M12 12L8 8M12 12L16 8" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>Total Oxygen Beds</h3>
+                        <p>Overall capacity</p>
+                    </div>
+                </div>
+                <div class="bed-controls">
+                    <div class="control-group">
+                        <label>Total Capacity</label>
+                        <input type="number" name="oxygen_beds_capacity" value="{{ beds.oxygen_capacity|default:0 }}" min="0" class="number-input"
+                            style="text-align: center; padding: 12px; border: 1px solid #D1D5DB; border-radius: 8px; width: 100%;"
+                            >
+                    </div>
+                </div>
+            </div>
+
+            <div class="bed-type-card">
+                <div class="bed-type-header">
+                    <div class="bed-icon" style="background: #F3E8FF; color: #9333EA;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path
+                                d="M3 12H6M6 12C6 14.2091 7.79086 16 10 16H12M6 12C6 9.79086 7.79086 8 10 8H12M12 8V5M12 8V16M12 16V19"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>Total Ventilators</h3>
+                        <p>Overall capacity</p>
+                    </div>
+                </div>
+                <div class="bed-controls">
+                    <div class="control-group">
+                        <label>Total Capacity</label>
+                        <input type="number" name="ventilators_capacity" value="{{ beds.ventilator_capacity|default:0 }}" min="0"
+                            class="number-input"
+                            style="text-align: center; padding: 12px; border: 1px solid #D1D5DB; border-radius: 8px; width: 100%;"
+                            >
+                    </div>
+                </div>
+            </div>
+
+            <div class="bed-type-card">
+                <div class="bed-type-header">
+                    <div class="bed-icon" style="background: #FEE2E2; color: #DC2626;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="11" width="18" height="9" rx="2" stroke="currentColor" stroke-width="2" />
+                            <path d="M3 15H21" stroke="currentColor" stroke-width="2" />
+                            <circle cx="12" cy="6" r="2" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>Total Isolation Beds</h3>
+                        <p>Overall capacity</p>
+                    </div>
+                </div>
+                <div class="bed-controls">
+                    <div class="control-group">
+                        <label>Total Capacity</label>
+                        <input type="number" name="isolation_beds_capacity" value="{{ beds.isolation_capacity|default:0 }}" min="0"
+                            class="number-input"
+                            style="text-align: center; padding: 12px; border: 1px solid #D1D5DB; border-radius: 8px; width: 100%;"
+                            >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a href="{% url 'hospital:dashboard' %}" class="btn-secondary">Cancel</a>
+        <button type="submit" class="btn-primary">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M16 5L7.5 13.5L4 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+            Update Availability
+        </button>
+    </div>
+</form>
+{% endblock %}

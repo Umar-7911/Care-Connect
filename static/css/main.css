@@ -1,0 +1,12 @@
+/* main.css placeholder */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background: #0078d4;
+  color: #fff;
+  padding: 1rem;
+}

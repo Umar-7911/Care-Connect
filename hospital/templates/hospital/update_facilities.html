@@ -1,0 +1,52 @@
+{% extends 'hospital/base_hospital.html' %}
+
+{% block title %}Update Facilities - CareConnect{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h2>Update Facilities</h2>
+    <p class="subtitle">Manage hospital facilities and services</p>
+</div>
+
+<div class="info-banner">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5" />
+        <path d="M10 10V14M10 6V7" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+    </svg>
+    <div>
+        <strong>Facility Information</strong><br>
+        Select all facilities available at your hospital. This helps patients make informed decisions.
+    </div>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="facilities-list">
+        {% for facility in available_facilities %}
+        <div class="facility-item">
+            <div>
+                <h3>{{ facility.name }}</h3>
+                <p>{{ facility.desc }}</p>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" name="{{ facility.id }}" value="1" {% if facility.name in current_facilities
+                    %}checked>
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="form-actions">
+        <a href="{% url 'hospital:dashboard' %}" class="btn-secondary">Cancel</a>
+        <button type="submit" class="btn-primary">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M16 5L7.5 13.5L4 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+            Update Facilities
+        </button>
+    </div>
+</form>
+{% endblock %}

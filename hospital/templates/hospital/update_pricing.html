@@ -1,0 +1,73 @@
+{% extends 'hospital/base_hospital.html' %}
+
+{% block title %}Update Pricing - CareConnect{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h2>Update Pricing</h2>
+    <p class="subtitle">Set indicative pricing for hospital services</p>
+</div>
+
+<div class="info-banner">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5" />
+        <path d="M10 10V14M10 6V7" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+    </svg>
+    <div>
+        <strong>Pricing Information</strong><br>
+        Prices shown are indicative and per day. Actual costs may vary based on treatment.
+    </div>
+</div>
+
+<form method="post" class="pricing-form">
+    {% csrf_token %}
+
+    <div class="pricing-section">
+        <h3>Bed Charges (Per Day)</h3>
+        <div class="price-inputs">
+            <div class="price-field">
+                <label>General Bed (₹)</label>
+                <input type="number" name="general_bed" value="{{ pricing.general_bed|default:0 }}" min="0" step="0.01"
+                    placeholder="0.00" required>
+            </div>
+            <div class="price-field">
+                <label>ICU Bed (₹)</label>
+                <input type="number" name="icu_bed" value="{{ pricing.icu_bed|default:0 }}" min="0" step="0.01"
+                    placeholder="0.00" required>
+            </div>
+            <div class="price-field">
+                <label>Oxygen Bed (₹)</label>
+                <input type="number" name="oxygen_bed" value="{{ pricing.oxygen_bed|default:0 }}" min="0" step="0.01"
+                    placeholder="0.00" required>
+            </div>
+            <div class="price-field">
+                <label>Isolation Bed (₹)</label>
+                <input type="number" name="isolation_bed" value="{{ pricing.isolation_bed|default:0 }}" min="0"
+                    step="0.01" placeholder="0.00" required>
+            </div>
+        </div>
+    </div>
+
+    <div class="pricing-section">
+        <h3>Equipment Charges (Per Day)</h3>
+        <div class="price-inputs">
+            <div class="price-field">
+                <label>Ventilator (₹)</label>
+                <input type="number" name="ventilator" value="{{ pricing.ventilator|default:0 }}" min="0" step="0.01"
+                    placeholder="0.00" required>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a href="{% url 'hospital:dashboard' %}" class="btn-secondary">Cancel</a>
+        <button type="submit" class="btn-primary">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M16 5L7.5 13.5L4 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+            Update Pricing
+        </button>
+    </div>
+</form>
+{% endblock %}

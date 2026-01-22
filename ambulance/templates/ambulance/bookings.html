@@ -1,0 +1,243 @@
+{% extends 'ambulance/base_ambulance.html' %}
+
+{% block title %}Booking Requests - CareConnect{% endblock %}
+
+{% block content %}
+<div class="page-header"
+    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <div>
+        <h2>Booking Requests</h2>
+        <p class="subtitle">Manage incoming booking requests and active trips.</p>
+    </div>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+        <div style="position: relative;">
+            <select id="statusFilter" onchange="filterBookings()"
+                style="padding: 0.5rem 2.5rem 0.5rem 1rem; border: 1px solid #E5E7EB; border-radius: 8px; background: white; font-size: 0.875rem; cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"
+                http://www.w3.org/2000/svg\" width=\"12\" height=\"12\" viewBox=\"0 0 12 12\">
+                <path fill=\"%234B5563\" d=\"M6 9L1 4h10z\" /></svg>'); background-repeat: no-repeat;
+                background-position: right 0.75rem center;">
+                <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Bookings</option>
+                <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending Requests</option>
+                <option value="confirmed" {% if status_filter == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                <option value="in_progress" {% if status_filter == 'in_progress' %}selected{% endif %}>In Progress
+                </option>
+                <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+                <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+        </div>
+        <button onclick="window.location.reload()"
+            style="padding: 0.5rem 1rem; border: 1px solid #E5E7EB; border-radius: 8px; background: white; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 2V6M8 10V14M2 8H6M10 8H14" stroke="#4B5563" stroke-width="2" stroke-linecap="round" />
+                <path d="M11.314 4.686a6 6 0 010 8.485M4.686 4.686a6 6 0 000 8.485" stroke="#4B5563" stroke-width="2"
+                    stroke-linecap="round" />
+            </svg>
+            Refresh
+        </button>
+    </div>
+</div>
+
+{% if bookings %}
+<div style="display: flex; flex-direction: column; gap: 1.5rem;">
+    {% for booking in bookings %}
+    <div
+        style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #E5E7EB;">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1.5rem;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                    <h3 style="margin: 0; font-size: 1.125rem; font-weight: 600;">Booking #{{ booking.id }}</h3>
+                    {% if booking.status == 'pending' %}
+                    <span
+                        style="padding: 0.25rem 0.75rem; background: #FEF3C7; color: #92400E; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">PENDING</span>
+                    {% elif booking.status == 'confirmed' %}
+                    <span
+                        style="padding: 0.25rem 0.75rem; background: #DBEAFE; color: #1E40AF; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">CONFIRMED</span>
+                    {% elif booking.status == 'in_progress' %}
+                    <span
+                        style="padding: 0.25rem 0.75rem; background: #D1FAE5; color: #065F46; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">IN
+                        PROGRESS</span>
+                    {% elif booking.status == 'completed' %}
+                    <span
+                        style="padding: 0.25rem 0.75rem; background: #D1FAE5; color: #065F46; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">COMPLETED</span>
+                    {% elif booking.status == 'cancelled' %}
+                    <span
+                        style="padding: 0.25rem 0.75rem; background: #FEE2E2; color: #991B1B; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">CANCELLED</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div style="text-align: right; color: #6B7280; font-size: 0.875rem;">
+                {{ booking.created_at|date:"M d, Y, g:i A" }}
+            </div>
+        </div>
+
+        <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div>
+                <div
+                    style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: #6B7280; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M8 2L2 6v6c0 2.5 2 4.5 6 5 4-.5 6-2.5 6-5V6l-6-4z" stroke="currentColor"
+                            stroke-width="1.5" fill="none" />
+                        <path d="M6 8h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                    </svg>
+                    AMBULANCE
+                </div>
+                {% if booking.ambulance %}
+                <div style="font-weight: 600; color: #111827;">{{ booking.ambulance.vehicle_number }}</div>
+                <div style="color: #6B7280; font-size: 0.875rem;">{{ booking.ambulance.get_type_display }}</div>
+                {% else %}
+                <div style="color: #6B7280; font-size: 0.875rem;">Not assigned</div>
+                {% endif %}
+            </div>
+
+            <div>
+                <div
+                    style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: #6B7280; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <circle cx="8" cy="6" r="2.5" stroke="currentColor" stroke-width="1.5" fill="none" />
+                        <path d="M3 14c0-2.5 2.5-5 5-5s5 2.5 5 5" stroke="currentColor" stroke-width="1.5"
+                            fill="none" />
+                    </svg>
+                    CONTACT PERSON
+                </div>
+                <div style="font-weight: 600; color: #111827;">{{ booking.contact_person|default:booking.patient_name }}
+                </div>
+                <div style="color: #6B7280; font-size: 0.875rem;">{{ booking.contact_phone|default:booking.patient_phone }}</div>
+            </div>
+
+            <div>
+                <div
+                    style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: #6B7280; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M8 2C5.5 2 3.5 4 3.5 6.5c0 3 4.5 7.5 4.5 7.5s4.5-4.5 4.5-7.5C12.5 4 10.5 2 8 2z"
+                            stroke="currentColor" stroke-width="1.5" fill="none" />
+                        <circle cx="8" cy="6.5" r="1.5" fill="currentColor" />
+                    </svg>
+                    PICKUP LOCATION
+                </div>
+                <div style="font-weight: 600; color: #111827; font-size: 0.875rem;">{{ booking.pickup_location|truncatewords:10 }}</div>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <div
+                style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: #6B7280; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M8 2C5.5 2 3.5 4 3.5 6.5c0 3 4.5 7.5 4.5 7.5s4.5-4.5 4.5-7.5C12.5 4 10.5 2 8 2z"
+                        stroke="currentColor" stroke-width="1.5" fill="none" />
+                    <circle cx="8" cy="6.5" r="1.5" fill="currentColor" />
+                </svg>
+                DROP LOCATION
+            </div>
+            <div style="font-weight: 600; color: #111827; font-size: 0.875rem;">{{ booking.drop_location|truncatewords:15 }}</div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            {% if booking.status == 'pending' %}
+            <form method="POST" style="display: inline;" onsubmit="return confirmAccept(this)">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="accept">
+                <input type="hidden" name="booking_id" value="{{ booking.id }}">
+
+                {% if booking.ambulance %}
+                <!-- User already selected an ambulance -->
+                <input type="hidden" name="ambulance_id" value="{{ booking.ambulance.id }}">
+                <div
+                    style="display: inline-block; margin-right: 0.5rem; padding: 0.5rem; background: #F3F4F6; border: 1px solid #D1D5DB; border-radius: 6px; font-size: 0.875rem; color: #374151;">
+                    Selected: {{ booking.ambulance.vehicle_number }}
+                </div>
+                {% else %}
+                <!-- Admin needs to select ambulance -->
+                <select name="ambulance_id" required
+                    style="padding: 0.5rem; border: 1px solid #E5E7EB; border-radius: 6px; margin-right: 0.5rem; font-size: 0.875rem;">
+                    <option value="">Select Ambulance</option>
+                    {% for ambulance in available_ambulances %}
+                    <option value="{{ ambulance.id }}">{{ ambulance.vehicle_number }} - {{ ambulance.get_type_display }}
+                    </option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+
+                <button type="submit"
+                    style="padding: 0.5rem 1.5rem; background: #10B981; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M13 4L6 11L3 8" stroke="white" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    Accept
+                </button>
+            </form>
+            <form method="POST" style="display: inline;" onsubmit="return confirmReject()">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="reject">
+                <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                <button type="submit"
+                    style="padding: 0.5rem 1.5rem; background: #EF4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M12 4L4 12M4 4l8 8" stroke="white" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                    Reject
+                </button>
+            </form>
+            {% elif booking.status == 'confirmed' or booking.status == 'in_progress' %}
+            <form method="POST" style="display: inline;" onsubmit="return confirmComplete()">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="mark_completed">
+                <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                <button type="submit"
+                    style="padding: 0.5rem 1.5rem; background: #2563EB; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M13 4L6 11L3 8" stroke="white" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    Mark as Completed
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div style="text-align: center; padding: 4rem 2rem; background: white; border-radius: 12px; border: 1px solid #E5E7EB;">
+    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" style="margin: 0 auto 1rem;">
+        <path d="M32 8C18.745 8 8 18.745 8 32s10.745 24 24 24 24-10.745 24-24S45.255 8 32 8z" stroke="#D1D5DB"
+            stroke-width="2" fill="none" />
+        <path d="M32 20v16M32 40h.01" stroke="#D1D5DB" stroke-width="2" stroke-linecap="round" />
+    </svg>
+    <h3 style="font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">No Bookings Found</h3>
+    <p style="color: #6B7280;">No booking requests match your current filter.</p>
+</div>
+{% endif %}
+
+<script>
+    function filterBookings() {
+        const status = document.getElementById('statusFilter').value;
+        const url = new URL(window.location.href);
+        url.searchParams.set('status', status);
+        window.location.href = url.toString();
+    }
+
+    function confirmAccept(form) {
+        const ambulanceSelect = form.querySelector('select[name="ambulance_id"]');
+        const ambulanceHidden = form.querySelector('input[name="ambulance_id"]');
+
+        // Check if we have either a selected dropdown option OR a hidden input
+        const hasSelection = (ambulanceSelect && ambulanceSelect.value) || (ambulanceHidden && ambulanceHidden.value);
+
+        if (!hasSelection) {
+            alert('Please select an ambulance to assign');
+            return false;
+        }
+        return confirm('Are you sure you want to accept this booking and assign the ambulance?');
+    }
+
+    function confirmReject() {
+        return confirm('Are you sure you want to reject this booking request?');
+    }
+
+    function confirmComplete() {
+        return confirm('Are you sure you want to mark this booking as completed? The ambulance will be made available again.');
+    }
+</script>
+{% endblock %}

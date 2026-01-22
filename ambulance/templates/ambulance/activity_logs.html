@@ -1,0 +1,49 @@
+{% extends 'ambulance/base_ambulance.html' %}
+
+{% block title %}Activity Logs - CareConnect{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Activity Logs</h2>
+    <p class="subtitle">View recent updates and changes</p>
+</div>
+
+<div class="table-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date & Time</th>
+                <th>Action</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if logs %}
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.timestamp|date:"M d, Y g:i A" }}</td>
+                <td>
+                    <span
+                        class="badge {% if 'ambulance' in log.action or 'add' in log.action or 'delete' in log.action %}badge-blue{% elif 'pricing' in log.action %}badge-green{% elif 'service' in log.action %}badge-gray{% else %}badge-blue{% endif %}">
+                        {{ log.action|cut:"_"|title}}
+                    </span>
+                </td>
+                <td>{{ log.details }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="3" style="text-align: center; padding: 3rem; color: #6B7280;">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" style="margin: 0 auto 1rem;">
+                        <circle cx="24" cy="24" r="20" stroke="#D1D5DB" stroke-width="2" />
+                        <path d="M24 16v12M24 32h.01" stroke="#D1D5DB" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                    <p style="font-size: 1rem; font-weight: 500; margin-bottom: 0.5rem;">No activity logs yet</p>
+                    <p style="font-size: 0.875rem;">Start by adding ambulances or updating pricing.</p>
+                </td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

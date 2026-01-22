@@ -1,0 +1,256 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Sign Up - CareConnect{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="logo-section">
+        <div class="logo">
+            <div class="logo-icon">+</div>
+            CareConnect
+        </div>
+        <p class="subtitle">Healthcare Emergency Coordination</p>
+    </div>
+
+    <h1 class="page-title">Create Account</h1>
+    <p class="page-description">Join CareConnect to access emergency healthcare services</p>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <form method="post" id="signupForm">
+        {% csrf_token %}
+
+        <!-- Role Selection -->
+        <div class="form-group">
+            <label for="role">I am a <span class="required">*</span></label>
+            <div class="input-wrapper">
+                <span class="input-icon">👥</span>
+                <select id="role" name="role" required>
+                    <option value="user">General User (Patient/Family)</option>
+                    <option value="hospital">Hospital Administrator</option>
+                    <option value="ambulance">Ambulance Service Provider</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="username">Username <span class="required">*</span></label>
+            <div class="input-wrapper">
+                <span class="input-icon">👤</span>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required minlength="3" onblur="checkUsername()">
+            </div>
+            <small id="usernameStatus" style="color: #666; font-size: 12px; margin-top: 4px; display: block;">Username must be at least 3 characters</small>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email Address <span class="required">*</span></label>
+            <div class="input-wrapper">
+                <span class="input-icon">✉️</span>
+                <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+            </div>
+            <small id="emailStatus" style="color: #666; font-size: 12px; margin-top: 4px; display: block;"></small>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone Number <span class="required">*</span></label>
+            <div class="phone-group">
+                <select id="countryCode" name="countryCode" onchange="updatePhoneValidation()">
+                    <option value="+91">🇮🇳 +91</option>
+                    <option value="+1">🇺🇸 +1</option>
+                    <option value="+44">🇬🇧 +44</option>
+                </select>
+                <div class="input-wrapper" style="flex: 1;">
+                    <span class="input-icon">📱</span>
+                    <input type="tel" id="phone" name="phone" placeholder="Enter phone number" required maxlength="15" pattern="[0-9]*" inputmode="numeric">
+                </div>
+            </div>
+            <small id="phoneStatus" style="color: #666; font-size: 12px; margin-top: 4px; display: block;">
+                For India (+91), enter 10-digit phone number
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password <span class="required">*</span></label>
+            <div class="input-wrapper">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="password" name="password"
+                    placeholder="Create a strong password (min 8 characters)" required minlength="8">
+                <span class="password-toggle" onclick="togglePassword('password', this)">👁️</span>
+            </div>
+            <small id="passwordHelp" style="color: #666; font-size: 12px; margin-top: 4px; display: block;">Password must be at least 8 characters long</small>
+        </div>
+
+        <div class="form-group">
+            <label for="confirm_password">Confirm Password <span class="required">*</span></label>
+            <div class="input-wrapper">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="confirm_password" name="confirm_password"
+                    placeholder="Confirm your password" required minlength="8">
+                <span class="password-toggle" onclick="togglePassword('confirm_password', this)">👁️</span>
+            </div>
+            <small id="confirmPasswordHelp" style="color: #d32f2f; font-size: 12px; margin-top: 4px; display: none;"></small>
+        </div>
+
+        <div class="form-group">
+            <label for="country">Country <span class="required">*</span></label>
+            <div class="input-wrapper">
+                <span class="input-icon">🌍</span>
+                <select id="country" name="country" required>
+                    <option value="">Select your country</option>
+                    <option value="IN">India</option>
+                    <option value="US">United States</option>
+                    <option value="UK">United Kingdom</option>
+                    <option value="AE">United Arab Emirates</option>
+                    <option value="AU">Australia</option>
+                </select>
+            </div>
+        </div>
+
+
+
+        <button type="submit" class="primary-btn">Create Account</button>
+    </form>
+
+    <div class="secondary-link">
+        Already have an account? <a href="{% url 'core:login' %}">Sign In</a>
+    </div>
+</div>
+
+<script>
+    function togglePassword(inputId, icon) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            icon.textContent = '👁️';
+        }
+    }
+    
+    // Password confirmation validation
+    document.getElementById('confirm_password').addEventListener('input', function() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = this.value;
+        const helpText = document.getElementById('confirmPasswordHelp');
+        
+        if (confirmPassword && password !== confirmPassword) {
+            helpText.textContent = 'Passwords do not match';
+            helpText.style.display = 'block';
+            helpText.style.color = '#d32f2f';
+            this.setCustomValidity('Passwords do not match');
+        } else {
+            helpText.style.display = 'none';
+            this.setCustomValidity('');
+        }
+    });
+    
+    document.getElementById('password').addEventListener('input', function() {
+        const confirmPassword = document.getElementById('confirm_password');
+        if (confirmPassword.value) {
+            confirmPassword.dispatchEvent(new Event('input'));
+        }
+    });
+    
+    // Phone number validation
+    function updatePhoneValidation() {
+        const countryCode = document.getElementById('countryCode').value;
+        const phoneInput = document.getElementById('phone');
+        const phoneStatus = document.getElementById('phoneStatus');
+        
+        if (countryCode === '+91') {
+            phoneInput.maxLength = 10;
+            phoneInput.pattern = '[0-9]{10}';
+            phoneStatus.textContent = 'For India (+91), enter exactly 10-digit phone number';
+            phoneStatus.style.color = '#666';
+        } else {
+            phoneInput.maxLength = 15;
+            phoneInput.pattern = '[0-9]*';
+            phoneStatus.textContent = 'Enter valid phone number';
+        }
+    }
+    
+    document.getElementById('phone').addEventListener('input', function() {
+        const countryCode = document.getElementById('countryCode').value;
+        const phone = this.value;
+        const phoneStatus = document.getElementById('phoneStatus');
+        
+        if (countryCode === '+91') {
+            if (phone.length === 10 && /^\d{10}$/.test(phone)) {
+                phoneStatus.textContent = '✓ Valid 10-digit phone number';
+                phoneStatus.style.color = '#2e7d32';
+            } else if (phone.length > 0) {
+                phoneStatus.textContent = 'Phone number must be exactly 10 digits for India';
+                phoneStatus.style.color = '#d32f2f';
+            }
+        }
+    });
+    
+    // Email validation
+    document.getElementById('email').addEventListener('input', function() {
+        const email = this.value;
+        const emailStatus = document.getElementById('emailStatus');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        if (email && !emailRegex.test(email)) {
+            emailStatus.textContent = 'Please enter a valid email address';
+            emailStatus.style.color = '#d32f2f';
+        } else if (email && emailRegex.test(email)) {
+            emailStatus.textContent = '✓ Valid email format';
+            emailStatus.style.color = '#2e7d32';
+        } else {
+            emailStatus.textContent = '';
+        }
+    });
+    
+    // Username availability check
+    function checkUsername() {
+        const username = document.getElementById('username').value;
+        const usernameStatus = document.getElementById('usernameStatus');
+        
+        if (username.length < 3) {
+            usernameStatus.textContent = 'Username must be at least 3 characters';
+            usernameStatus.style.color = '#d32f2f';
+            return;
+        }
+        
+        // Check username availability via AJAX
+        fetch(`/core/check-username/?username=${encodeURIComponent(username)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.available) {
+                    usernameStatus.textContent = '✓ Username is available';
+                    usernameStatus.style.color = '#2e7d32';
+                } else {
+                    usernameStatus.textContent = '✗ Username is already taken';
+                    usernameStatus.style.color = '#d32f2f';
+                }
+            })
+            .catch(error => {
+                console.error('Error checking username:', error);
+            });
+    }
+    
+    // Form submission validation
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+        
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            alert('Passwords do not match');
+            return false;
+        }
+    });
+    
+    // Initialize phone validation on page load
+    updatePhoneValidation();
+</script>
+{% endblock %}

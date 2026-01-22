@@ -1,0 +1,68 @@
+{% extends 'ambulance/base_ambulance.html' %}
+
+{% block title %}Service Area - CareConnect{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Service Area</h2>
+    <p class="subtitle">Define your ambulance service coverage areas</p>
+</div>
+
+<div class="note-box info" style="margin-bottom: 2rem;">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd"
+            d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" />
+    </svg>
+    <div>
+        <strong>Service Coverage</strong><br>
+        Select all cities and zones where your ambulances are available. This helps users find nearby services.
+    </div>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="ambulance-card">
+        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem;">Select Service Areas</h3>
+
+        <div class="checkbox-group">
+            {% for city in available_cities %}
+            <div class="checkbox-item">
+                <input type="checkbox" name="service_areas" value="{{ city }}" class="checkbox"
+                    id="city_{{ city|slugify }}" {% if city in current_service_area %}checked{% endif %}>
+                <label for="city_{{ city|slugify }}" class="checkbox-label">{{ city }}</label>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if current_service_area %}
+    <div class="ambulance-card" style="margin-top: 1.5rem;">
+        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem;">Currently Serving</h3>
+
+        <div class="service-zones">
+            {% for area in current_service_area %}
+            <div class="zone-item">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" />
+                </svg>
+                {{ area }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+        <a href="{% url 'ambulance:dashboard' %}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+            </svg>
+            Update Service Area
+        </button>
+    </div>
+</form>
+{% endblock %}

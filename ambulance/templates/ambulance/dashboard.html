@@ -1,0 +1,129 @@
+{% extends 'ambulance/base_ambulance.html' %}
+
+{% block title %}Dashboard Overview - CareConnect{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Dashboard Overview</h2>
+    <p class="subtitle">Quick summary of your ambulance service status</p>
+</div>
+
+<!-- Status Banner -->
+<div class="status-banner active">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" />
+    </svg>
+    <div>
+        <strong>Listing Active on CareConnect</strong>
+        <p>Last updated <span id="last_updated">{{ last_updated|date:"g:i A, M d, Y"|default:"just now" }}</span></p>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="summary-grid">
+    <div class="summary-card">
+        <div class="card-icon blue">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                <path d="M12 24a2 2 0 11-4 0 2 2 0 014 0zM22 24a2 2 0 11-4 0 2 2 0 014 0z" />
+                <path
+                    d="M4 6a2 2 0 00-2 2v14a2 2 0 002 2h2.528a3 3 0 015.944 0H16a2 2 0 002-2V8a2 2 0 00-2-2H4zM20 10a2 2 0 00-2 2v10.528a3 3 0 015.944 0H26a2 2 0 002-2v-7a2 2 0 00-.586-1.414l-3-3A2 2 0 0023 9h-3z" />
+            </svg>
+        </div>
+        <div class="card-content">
+            <h3>Total Ambulances</h3>
+            <p class="card-value" id="total_ambulances">{{ total_ambulances }}</p>
+            <p class="card-meta"><span id="available_ambulances">{{ available_ambulances }}</span> available</p>
+        </div>
+    </div>
+
+    <div class="summary-card">
+        <div class="card-icon red">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                <path d="M6 8h12v2H6V8zm0 4h12v2H6v-2zm0 4h8v2H6v-2z" />
+                <path d="M16 2L8 6v8c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V6l-8-4z" />
+            </svg>
+        </div>
+        <div class="card-content">
+            <h3>ALS Ambulances</h3>
+            <p class="card-value" id="als_count">{{ als_count }}</p>
+            <p class="card-meta">Advanced Life Support</p>
+        </div>
+    </div>
+
+    <div class="summary-card">
+        <div class="card-icon green">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                <path d="M16 4L8 8v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V8l-8-4zm0 6h4v4h-4v4h-4v-4H8v-4h4V6h4v4z" />
+            </svg>
+        </div>
+        <div class="card-content">
+            <h3>BLS Ambulances</h3>
+            <p class="card-value" id="bls_count">{{ bls_count }}</p>
+            <p class="card-meta">Basic Life Support</p>
+        </div>
+    </div>
+
+    <div class="summary-card">
+        <div class="card-icon gray">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                <path d="M12 24a2 2 0 11-4 0 2 2 0 014 0zM22 24a2 2 0 11-4 0 2 2 0 014 0z" />
+                <path d="M4 8a2 2 0 012-2h10a2 2 0 012 2v14h-3.472a3 3 0 00-5.056 0H6a2 2 0 01-2-2V8z" />
+            </svg>
+        </div>
+        <div class="card-content">
+            <h3>Non-Emergency</h3>
+            <p class="card-value" id="non_emergency_count">{{ non_emergency_count }}</p>
+            <p class="card-meta">Patient Transport</p>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="quick-actions">
+    <h3>Quick Actions</h3>
+    <div class="action-buttons">
+        <a href="{% url 'ambulance:manage_ambulances' %}" class="action-btn primary">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+                <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3z" />
+            </svg>
+            Manage Ambulances
+        </a>
+        <a href="{% url 'ambulance:update_pricing' %}" class="action-btn">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                    d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582z" />
+                <path fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" />
+            </svg>
+            Update Pricing
+        </a>
+        <a href="{% url 'ambulance:service_area' %}" class="action-btn">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" />
+            </svg>
+            Service Area
+        </a>
+    </div>
+</div>
+
+<script>
+    function updateDashboardStats() {
+        fetch("{% url 'ambulance:dashboard_stats_api' %}")
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('total_ambulances').textContent = data.total_ambulances;
+                document.getElementById('available_ambulances').textContent = data.available_ambulances;
+                document.getElementById('als_count').textContent = data.als_count;
+                document.getElementById('bls_count').textContent = data.bls_count;
+                document.getElementById('non_emergency_count').textContent = data.non_emergency_count;
+                document.getElementById('last_updated').textContent = data.last_updated;
+            })
+            .catch(error => console.error('Error fetching dashboard stats:', error));
+    }
+
+    // Update every 5 seconds
+    setInterval(updateDashboardStats, 5000);
+</script>
+{% endblock %}

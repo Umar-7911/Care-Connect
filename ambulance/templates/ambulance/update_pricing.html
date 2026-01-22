@@ -1,0 +1,76 @@
+{% extends 'ambulance/base_ambulance.html' %}
+
+{% block title %}Update Pricing - CareConnect{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Update Pricing</h2>
+    <p class="subtitle">Set transparent pricing for your ambulance services</p>
+</div>
+
+<div class="note-box info" style="margin-bottom: 2rem;">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" />
+    </svg>
+    <div>
+        <strong>Pricing Information</strong><br>
+        Prices shown are indicative. Actual costs may vary based on distance and services.
+    </div>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="ambulance-card">
+        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem;">Base Charges</h3>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div class="form-group">
+                <label class="form-label">Base Fare (₹) *</label>
+                <input type="number" name="base_fare" value="{{ pricing.base_fare|default:0 }}" min="0" step="0.01"
+                    class="form-input" placeholder="0.00" required>
+                <p class="form-helper">Initial pickup charge</p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Per Kilometer (₹) *</label>
+                <input type="number" name="per_km" value="{{ pricing.per_km|default:0 }}" min="0" step="0.01"
+                    class="form-input" placeholder="0.00" required>
+                <p class="form-helper">Charge per kilometer traveled</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="ambulance-card" style="margin-top: 1.5rem;">
+        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem;">Additional Services</h3>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div class="form-group">
+                <label class="form-label">Oxygen Support (₹)</label>
+                <input type="number" name="oxygen_charge" value="{{ pricing.oxygen_charge|default:0 }}" min="0"
+                    step="0.01" class="form-input" placeholder="0.00" required>
+                <p class="form-helper">Additional charge for oxygen</p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Paramedic/Attendant (₹)</label>
+                <input type="number" name="attendant_charge" value="{{ pricing.attendant_charge|default:0 }}" min="0"
+                    step="0.01" class="form-input" placeholder="0.00" required>
+                <p class="form-helper">Additional charge for attendant</p>
+            </div>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+        <a href="{% url 'ambulance:dashboard' %}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+            </svg>
+            Update Pricing
+        </button>
+    </div>
+</form>
+{% endblock %}
