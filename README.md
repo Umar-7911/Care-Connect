@@ -28,51 +28,31 @@ CareConnect bridges the gap between patients and healthcare providers by providi
 
 ### Landing Page, Sign-In and Sign-Up
 
-````carousel
-![CareConnect Landing Page](screenshots/c_landing_page.png)
-<!-- slide -->
-![Sign Up Page](screenshots/c_signup_page.png)
-<!-- slide -->
-![Sign In Page](screenshots/c_signin_page.png)
-````
+<img src="https://github.com/Umar-7911/Care-Connect/blob/main/screenshots/landing_page.png">
+<img src="https://github.com/Umar-7911/Care-Connect/blob/main/screenshots/signup_page.png">
+<img src="https://github.com/Umar-7911/Care-Connect/blob/main/screenshots/signin_page.png">
 
 ### User Dashboard
 
-````carousel
-![Hospital Search](screenshots/user_hospital_search.png)
-<!-- slide -->
-![Hospital Results](screenshots/user_hospital_results.png)
-<!-- slide -->
-![Hospital Comparison](screenshots/user_hospital_comparison.png)
-<!-- slide -->
-![Ambulance Directory](screenshots/user_ambulance_directory.png)
-````
+<img src="https://github.com/Umar-7911/Care-Connect/blob/main/screenshots/user_hospital_search.png">
+<img src="https://github.com/Umar-7911/Care-Connect/blob/main/screenshots/user_hospital_results.png">
+<img src="https://github.com/Umar-7911/Care-Connect/blob/main/screenshots/user_hospital_comparison.png">
+<img src="https://github.com/Umar-7911/Care-Connect/blob/main/screenshots/user_ambulance_directory.png">
 
 ### Hospital Dashboard
 
-````carousel
-![Update Bed Availability](screenshots/hospital_update_beds.png)
-<!-- slide -->
-![Update Facilities](screenshots/hospital_update_facilities.png)
-<!-- slide -->
-![Update Insurance](screenshots/hospital_update_insurance.png)
-<!-- slide -->
-![Update Pricing](screenshots/hospital_update_pricing.png)
-````
+<img src="https://github.com/Umar-7911/Care-Connect/blob/main/screenshots/hospital_update_beds.png">
+<img src="https://github.com/Umar-7911/Care-Connect/blob/main/screenshots/hospital_update_facilities.png">
+<img src="https://github.com/Umar-7911/Care-Connect/blob/main/screenshots/hospital_update_insurance.png">
+<img src="https://github.com/Umar-7911/Care-Connect/blob/main/screenshots/hospital_update_pricing.png">
 
 ### Ambulance Dashboard
 
-````carousel
-![Dashboard Overview](screenshots/ambulance_dashboard_overview.png)
-<!-- slide -->
-![Manage Ambulances](screenshots/ambulance_manage_fleet.png)
-<!-- slide -->
-![Fleet List](screenshots/ambulance_fleet_list.png)
-<!-- slide -->
-![Service Area](screenshots/ambulance_service_area.png)
-<!-- slide -->
-![Update Pricing](screenshots/ambulance_update_pricing.png)
-````
+<img src="https://github.com/Umar-7911/Care-Connect/blob/main/screenshots/ambulance_dashboard_overview.png">
+<img src="https://github.com/Umar-7911/Care-Connect/blob/main/screenshots/ambulance_manage_fleet.png">
+<img src="https://github.com/Umar-7911/Care-Connect/blob/main/screenshots/ambulance_fleet_list.png">
+<img src="https://github.com/Umar-7911/Care-Connect/blob/main/screenshots/ambulance_service_area.png">
+<img src="https://github.com/Umar-7911/Care-Connect/blob/main/screenshots/ambulance_update_pricing.png">
 
 ## 🛠️ Technology Stack
 
